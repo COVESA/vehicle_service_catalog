@@ -1,0 +1,46 @@
+#
+# (C) 2021 - Magnus Feuer
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+
+#
+# A proposal for how we can translate VSS signals to properties.
+#
+# Each branch is a namespace, and signals are defined as properties within those
+# namespaces
+
+
+# From VSS :
+#
+# - Vehicle:
+#   type: branch
+#   description: High-level vehicle data.
+#
+# - VehicleIdentification:
+#   type: branch
+#   description: Attributes that identify a vehicle
+#
+# - VehicleIdentification.VIN:
+#   datatype: string
+#   type: attribute
+#   description: 17-character Vehicle Identification Number (VIN) as defined by ISO 3779
+
+
+namespaces:
+  - name: Vehicle
+    description: High-level vehicle data.
+
+    namespaces:
+      - name: VehicleIdentification
+        description:  Attributes that identify a vehicle
+
+        properties:
+          - name: VIN
+            description: 17-character Vehicle Identification Number (VIN) as defined by ISO 3779
+            type: attribute
+            datatype: string # VSS should have same native types as VSC
+
+
