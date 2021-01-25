@@ -21,9 +21,13 @@
 # TODO:
 # + Define additional semantics for a service, if needed.
 #
+# + Add array arguments.
+#
 # + How do we map namespaces to FrancaIDL (packages?)
 #   Multiple namespaces in a single service file does not map
 #   to single FrancaIDL package name.
+#
+# + Possibly add properties (signals with retained values).
 #
 service:
 
@@ -61,8 +65,8 @@ service:
         # Min/max intervals can be optionally specified
         #
         - name: movement_t
-          type: uint16
-          min: 0
+          type: int16
+          min: -1000
           max: 1000
           description: |
             The movement of a seat component
@@ -151,6 +155,17 @@ service:
               type: movement.position_t
               description: |
                 The various positions of the seat              
+        
+        # We can also redefine an existing type,
+        # effectively giving it a new name
+        # This is only an example and should be removed
+        - name: relative_movemenet_t
+          type: movement_t
+
+        # We can also rename a struct.
+        # This is only an example and should be removed
+        - name: relative_position_t
+          type: position_t
 
   # Interface
   #
@@ -164,6 +179,8 @@ service:
   # 
   #  An event is a single sender -> multiple receiver request
   #  with no return value.
+  #
+  #  TODO: Add properties? Signals with retained values.
   #
   include-interfaces:
     - file: "xxx.yml" 
@@ -182,8 +199,7 @@ service:
     # + Do we specify delivery effort level here?
     #   UDP vs. TCP-level effort for commands, methodsm and events?
     #
-
-    - name: seats
+    - name: seat
       description: Seats API
 
       # Commands
