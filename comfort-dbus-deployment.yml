@@ -1,18 +1,10 @@
 #
-# Copyright 2020 by Toyota Motor North America (TMNA)
-# All rights reserverd.
-#
-#  Service catalog extensions for seats to generate dbus code.
-#
-
-#
 # This dictionary will be applied on top of the service specification itself.
 # Any existing values inside the service spec will be overwritten by the data in
 # this deployment file.
 #
+name: comfort
 namespaces: 
-  - name: comfort
-    namespaces: 
-      - name: seats
-        dbus_interface: com.toyota.cdc.platform.seat.v1
+  - name: seats
+    dbus_interface: com.genivi.cabin.seat.v1
 

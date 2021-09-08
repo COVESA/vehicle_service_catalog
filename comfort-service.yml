@@ -6,7 +6,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #
 
-
 # Namespace
 #
 #  A n namespace is a collection of datatypes, methods, properties,
@@ -27,13 +26,15 @@
 
 ---
 name: comfort
-description: A collection of interfaces pertaining tso cabin comfort.
+major-version: 2
+minor-version: 1
+description: A collection of interfaces pertaining to cabin comfort.
 
-# TODO: Define include semantiocs and rules
+# Include another VSC file into the current "comfort" namespace
 #
 includes:
-  -  description: "Include all error codes used by this namespace"
-     file: "global-errors.yml"
+  -  description: Include all error codes used by this namespace
+     file: global-errors.yml
 
 # Create a separate namespace for movement-related datatypes and methods.
 # We can create additional namespaces for HVAC, ambient lighting, etc.
@@ -41,53 +42,37 @@ includes:
 namespaces:
   - name: seats
     description: Seat interface and datatypes.
-
-    # DATATYPES
+    
+    # Defines all structs hosted by the `seats` namespace.
+    # Standard structs can be defind, using either native types, tyepdefs,
+    # or other (nested) structs.
     #
-    # This sectiond defines all typedefs, structs, and enumerators
-    # for the given namespace
-    #
-    datatypes:
-      # Typedefs
+    structs:
       #
-      # Standard redefinition of native types are supported.
-      # Min/max intervals can be optionally specified
-      #
-      - name: movement_t
-        type: int16
-        min: -1000
-        max: 1000
-        description: |
-          The movement of a seat component
-
-      # Structs
-      #
-      # Standard structs can be defind, using either native types, tyepdefs,
-      # or other (nested) structs.
+      # Position of seat
       #
       - name: position_t
-        type: struct
         description: |
           The position of the entire seat
         members:
           - name: base
-            type: movement_t
+            datatype: movement_t
             description: |
               The position of the base 0 front, 1000 back
           - name: cushion
-            type: movement_t
+            datatype: movement_t
             description: |
               The position of the cushion 0 short, 1000 long
           - name: lumbar
-            type: movement_t
+            datatype: movement_t
             description: |
               The position of the lumbar support
           - name: side_bolster
-            type: movement_t
+            datatype: movement_t
             description: |
               The position of the side bolster
           - name: head_restraint
-            type: movement_t
+            datatype: movement_t
             description: |
               The position of the head restraint 0 down, 1000 up
 
@@ -95,19 +80,58 @@ namespaces:
       # Seat location
       #
       - name: seat_location_t
-        type: struct
         description: |
           The location of the seat in the vehicle
         members:
           - name: row
-            type: uint8
+            datatype: uint8
             description: |
               The row, front 0 and +1 toward rear
           - name: index
-            type: uint8
+            datatype: uint8
             description: |
               The index within the row, 0 left most, +1 toward right
 
+
+      - name: seat_t
+        type: struct
+        description: |
+          The structure used to describe the seat's position in the vehicle
+
+        members:
+          - name: location
+            datatype: seat_location_t
+            description: |
+              The location of the seat in the vehicle
+
+          - name: position
+            datatype: position_t
+            description: |
+              The various positions of the seat
+
+
+    # Typedefs
+    #
+    # Standard redefinition of native types are supported.
+    # Min/max intervals can be optionally specified
+    #
+    typedefs:
+      - name: movement_t
+        type: typedef
+        datatype: int16
+        min: -1000
+        max: 1000
+        description: |
+          The movement of a seat component
+
+
+      # We can also redefine an existing type,
+      # effectively giving it a new name.
+      - name: relative_movemenet_t
+        type: movement_t
+
+
+    enumerations:
       # Enums
       #
       #  TODO:
@@ -121,7 +145,7 @@ namespaces:
       - name: seat_component_t
         type: enumeration   # RESOLUTION: was enum. Ok to rename enumeration.
 
-        enum_type: uint8
+        datatype: uint8  # Should probably be moved to deployment file
         options:
           - name: base
             value: 0
@@ -134,33 +158,6 @@ namespaces:
             value: 3
           - name: head_restraint
             value: 4
-
-      - name: seat_t
-        type: struct
-        description: |
-          The structure used to describe the seat's position in the vehicle
-
-          members:
-          - name: location
-            type: seat_location_t
-            description: |
-              The location of the seat in the vehicle
-          - name: position
-            type: position_t
-            description: |
-              The various positions of the seat
-
-      # We can also redefine an existing type,
-      # effectively giving it a new name
-      # This is only an example and should be removed
-      - name: relative_movemenet_t
-        type: movement_t
-
-      # We can also rename a struct.
-      # This is only an example and should be removed
-      - name: relative_position_t
-        type: position_t
-
 
     # METHODS
     #
@@ -178,11 +175,11 @@ namespaces:
         description: |
           Set the desired seat position
 
-        in_arguments: # TODO FYI: Gunnar
+        in: # TODO FYI: Gunnar
           - name: seat
             description: |
               The desired seat position
-            type: movement.seat_t
+            datatype: movement.seat_t
 
       - name: move_component
         description: |
@@ -192,39 +189,39 @@ namespaces:
         #
         #  Argument can be of any native type, enum, struct, or typedef.
         #
-        in_arguments:
+        in:
           - name: seat
             description: |
               The seat location to change
-            type: movement.seat_location_t
+            datatype: movement.seat_location_t
           - name: component
             description: |
               The component position to change
-            type: movement.seat_component_t
+            datatype: movement.seat_component_t
           - name: position
             description: |
               The desired position to move the component to
-            type: movement.movement_t
+            datatype: movement.movement_t
 
       - name: current_position
         description: |
           Get the current position of the seat
 
-        in_arguments:
+        in:
           - name: row
             description: |
               The desired seat to row query
-            type: uint8
+            datatype: uint8
           - name: index
             description: |
               The desired seat index to query
-            type: uint8
+            datatype: uint8
 
-        out_arguments:
+        out:
           - name: seat
             description: |
               The seat state that was requested
-            type: movement.seat_t
+            datatype: movement.seat_t
 
     # EVENTS
     #
@@ -243,40 +240,40 @@ namespaces:
       - name: seat_moving
         description: |
           The event of a seat beginning movement
-        in_arguments:
+        in:
           - name: status
             description: |
               The movement status, moving (1), not moving (0)
-            type: uint8
+            datatype: uint8
           - name: row
             description: |
               The row of the seat
-            type: uint8
+            datatype: uint8
           - name: index
             description: |
               The index of the seat position in the row
-            type: uint8
+            datatype: uint8
           - name: component
             description: |
               The seat component that is moving
-            type: movement.seat_component_t
+            datatype: movement.seat_component_t
 
       - name: passenger_present
         description: |
           When the seat passenger status changes
-        in_arguments:
+        in:
           - name: status
             description: |
               The status of seat passenger, passenger (1), no passenger (0)
-            type: uint8
+            datatype: boolean
           - name: row
             description: |
               The row of the seat
-            type: uint8
+            datatype: uint8
           - name: index
             description: |
               The index of the seat position in the row
-            type: uint8
+            datatype: uint8
 
 
     # PROPERTIES
