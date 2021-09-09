@@ -44,14 +44,14 @@ described [here](https://creativecommons.org/licenses/by/4.0/)
             - [Member key-value: `datatype`](#member-key-value-datatype)
             - [Member key-value: `arraysize`](#member-key-value-arraysize)
     - [Namespace list object: `enumerations`](#namespace-list-object-enumerations)
-        - [Enumaration key-value: `name`](#enumaration-key-value-name)
-        - [Enumaration key-value: `datatype`](#enumaration-key-value-datatype)
-        - [Enumaration key-value: `description`](#enumaration-key-value-description)
+        - [Enumeration key-value: `name`](#enumeration-key-value-name)
+        - [Enumeration key-value: `datatype`](#enumeration-key-value-datatype)
+        - [Enumeration key-value: `description`](#enumeration-key-value-description)
         - [Enumeration list object: `options`](#enumeration-list-object-options)
             - [Options key-value: `name`](#options-key-value-name)
             - [Options key-value: `value`](#options-key-value-value)
             - [Options key-value: `description`](#options-key-value-description)
-        - [Namespace list Object: `methods`](#namespace-list-object-methods)
+    - [Namespace list Object: `methods`](#namespace-list-object-methods)
         - [Methods key-value: `name`](#methods-key-value-name)
         - [Methods key-value: `description`](#methods-key-value-description)
         - [Methods list object: `in`](#methods-list-object-in)
@@ -64,7 +64,7 @@ described [here](https://creativecommons.org/licenses/by/4.0/)
             - [Out parameter key-value: `description`](#out-parameter-key-value-description)
             - [Out parameter key-value: `datatype`](#out-parameter-key-value-datatype)
             - [Out parameter key-value: `arraysize`](#out-parameter-key-value-arraysize)
-        - [Namespace list object: `events`](#namespace-list-object-events)
+    - [Namespace list object: `events`](#namespace-list-object-events)
         - [Event key-value: `name`](#event-key-value-name)
         - [Event key-value: `description`](#event-key-value-description)
         - [Event list object: `in`](#event-list-object-in)
@@ -72,12 +72,12 @@ described [here](https://creativecommons.org/licenses/by/4.0/)
             - [In parameter key-value: `description`](#in-parameter-key-value-description-1)
             - [In parameter key-value: `datatype`](#in-parameter-key-value-datatype-1)
             - [In parameter key-value: `arraysize`](#in-parameter-key-value-arraysize-1)
-        - [Namespace list object: `properties`](#namespace-list-object-properties)
+    - [Namespace list object: `properties`](#namespace-list-object-properties)
         - [Property key-value: `name`](#property-key-value-name)
         - [Property key-value: `description`](#property-key-value-description)
         - [Property key-value: `datatype`](#property-key-value-datatype)
         - [Property key-value: `arraysize`](#property-key-value-arraysize)
-        - [Namespace list object: `includes`](#namespace-list-object-includes)
+    - [Namespace list object: `includes`](#namespace-list-object-includes)
         - [Include key-value: `file`](#include-key-value-file)
         - [Include key-value: `description`](#include-key-value-description)
 
@@ -1007,7 +1007,7 @@ Contains a description of the enum option.
 
 ----------------------
 
-### Namespace list Object: `methods`
+## Namespace list Object: `methods`
 |                        |                   |
 |:-----------------------|:------------------|
 | **Hosted by**          | `namespaces` list |
@@ -1189,7 +1189,7 @@ This key is only allowed if the `datatype` element specifies an array
 
 ----------------------
 
-### Namespace list object: `events`
+## Namespace list object: `events`
 |                        |                   |
 |:-----------------------|:------------------|
 | **Hosted by**          | `namespaces` list |
@@ -1313,7 +1313,7 @@ This key is only allowed if the `datatype` element specifies an array
 
 --------------------
 
-### Namespace list object: `properties`
+## Namespace list object: `properties`
 
 |                        |                            |
 |:-----------------------|:---------------------------|
@@ -1406,7 +1406,7 @@ This key is only allowed if the `datatype` element specifies an array
 
 --------------------
 
-### Namespace list object: `includes`
+## Namespace list object: `includes`
 
 |                    |                   |
 |:-------------------|:------------------|
