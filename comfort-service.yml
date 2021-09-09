@@ -8,7 +8,7 @@
 
 # Namespace
 #
-#  A n namespace is a collection of datatypes, methods, properties,
+#  A namespace is a collection of datatypes, methods, properties,
 #  events, and other namespaces.
 #
 #
@@ -20,7 +20,7 @@
 # + How do we import namespaces, datatypes, etc from other service files?
 #   Importing datatypes used by multiple services make sense, but it
 #   will put a strain on the build pipeline since we now will have to
-#   seach for and assemble a library of interdependent services.
+#   search for and assemble a library of interdependent services.
 #
 #
 
@@ -44,7 +44,7 @@ namespaces:
     description: Seat interface and datatypes.
     
     # Defines all structs hosted by the `seats` namespace.
-    # Standard structs can be defind, using either native types, tyepdefs,
+    # Standard structs can be defind, using either native types, typedefs,
     # or other (nested) structs.
     #
     structs:
@@ -234,7 +234,7 @@ namespaces:
     #
     # TODO:
     # + FrancaIDL may lack semantics to cover this. We need to
-    #   create apropriate transformation rules.
+    #   create appropriate transformation rules.
     #
     events:
       - name: seat_moving

@@ -101,14 +101,14 @@ The format supports the following features
 
 * **Methods**  
   A call, executed by a single server instance, that optionally returns a value.
-  Executtion is guaranteed to TCP level with server failure being reported.
+  Execution is guaranteed to TCP level with server failure being reported.
   
 * **Events**  
   A fire-and-forget call, executed by zero or more subscribing instances, that does not return a value.
-  Executtion is best effort to UDP level with server failures not being reported.
+  Execution is best effort to UDP level with server failures not being reported.
 
 * **Defined data types**  
-  Named datat types that can be enumerations, (nested) structs or typedefs.
+  Named data types that can be enumerations, (nested) structs or typedefs.
   
 * **Properties**  
   A shared state object that can be read and set, and which is
@@ -138,7 +138,7 @@ VSC namespaces can optionally have a major and minor version,
 specified by `major-version` and `minor-version` keys.
 
 Namespace version management lets a client implementation have
-expecations that a server implementation will support a specific
+expectations that a server implementation will support a specific
 variant of data types, method call, or property.
 
 Bumped minor numbers identifies backward-compatible additions to the
@@ -147,7 +147,7 @@ a server namespace and its methods, it knows that it can safely
 interface a server implementation of version 1.4 of that same
 namespace.
 
-Bumped major versions identified non-compatible changes to the
+Bumped major versions identifies non-compatible changes to the
 previous version, such as a changed method signature. This means that
 a client requiring version 1.3 of a server knows that it cannot invoke
 a version 2.0 server implementation of that interface since that
@@ -175,7 +175,7 @@ arguments, enumeration types, and struct members.
 | int16      | signed 16-bit integer                  | -32768      | 32767      |
 | uint32     | unsigned 32-bit integer                | 0           | 4294967295 |
 | int32      | signed 32-bit integer                  | -2147483648 | 2147483647 |
-| uint64     | unsigned 64-bit integer                | 0           | 2^64       |
+| uint64     | unsigned 64-bit integer                | 0           | 2^64 - 1   |
 | int64      | signed 64-bit integer                  | -2^63       | 2^63 - 1   |
 | boolean    | boolean value                          | 0/false     | 1/true     |
 | float      | floating point number                  | -3.4e -38   | 3.4e 38    |
@@ -902,13 +902,13 @@ This key is only allowed if the `datatype` element specifies an array
 | **Mand. hosted lists** | `options`                 |
 | **Opt. hosted lists**  | N/A                       |
 
-Each `enumreations` list object specifies an enumerated list (enum) of
+Each `enumerations` list object specifies an enumerated list (enum) of
 options, where each option can have its own integer value.
 
 The new data type defined by the enum can be used by other
 datatypes, method & event parameters, and properties.
 
-A `enumations` example list object is given below:
+A `enumerations` example list object is given below:
 
 ```
 enumerations:
@@ -931,7 +931,7 @@ enumerations:
         value: 4
 ```
 
-### Enumaration key-value: `name`
+### Enumeration key-value: `name`
 |                  |         |
 |:-----------------|:--------|
 | **YAML Type**    | string  |
@@ -940,7 +940,7 @@ enumerations:
 
 Defines the name of the enum.
 
-### Enumaration key-value: `datatype`
+### Enumeration key-value: `datatype`
 |                  |                            |
 |:-----------------|:---------------------------|
 | **YAML Type**    | string                     |
@@ -956,7 +956,7 @@ If `datatype` refers to a defined type, this type can be a
 local, nested, or externally defined reference.
 
 
-### Enumaration key-value: `description`
+### Enumeration key-value: `description`
 |                  |               |
 |:-----------------|:--------------|
 | **YAML Type**    | string        |
@@ -1018,7 +1018,7 @@ Contains a description of the enum option.
 
 Each `methods` list object specifies a method call, executed by a
 single server instance, that optionally returns a value. 
-Executtion is guaranteed to TCP level with server failure being reported.
+Execution is guaranteed to TCP level with server failure being reported.
 
 A `methods` sample list object is given below:
 
@@ -1324,7 +1324,7 @@ This key is only allowed if the `datatype` element specifies an array
 Each `properties` list object specifies a shared state object that can
 be read and set, and which is available to all subscribing entities.
 
-A `propeties` sample list object is given below, together with a struct definition:
+A `properties` sample list object is given below, together with a struct definition:
 
 ```
 structs
