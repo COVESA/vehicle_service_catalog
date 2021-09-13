@@ -117,7 +117,6 @@ namespaces:
     #
     typedefs:
       - name: movement_t
-        type: typedef
         datatype: int16
         min: -1000
         max: 1000
@@ -127,8 +126,8 @@ namespaces:
 
       # We can also redefine an existing type,
       # effectively giving it a new name.
-      - name: relative_movemenet_t
-        type: movement_t
+      - name: relative_movement_t
+        datatype: movement_t
 
 
     enumerations:
@@ -143,8 +142,6 @@ namespaces:
       #    can define uint16_t while another has uint8_t.
       #
       - name: seat_component_t
-        type: enumeration   # RESOLUTION: was enum. Ok to rename enumeration.
-
         datatype: uint8  # Should probably be moved to deployment file
         options:
           - name: base
@@ -154,7 +151,6 @@ namespaces:
           - name: lumbar
             value: 2
           - name: side_bolster
-
             value: 3
           - name: head_restraint
             value: 4

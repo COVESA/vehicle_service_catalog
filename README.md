@@ -391,7 +391,6 @@ Example:
 name: comfort
   typedefs:
     - name: movement_t
-      type: typedef
       datatype: int16
       min: -1000
       max: 1000
@@ -412,7 +411,6 @@ The combined YAML structure to be processed will look like this:
 name: comfort
   typedefs:
     - name: movement_t
-      type: typedef
       datatype: int8 # Replaced datatype
       min: -1000
       max: 1000
@@ -511,7 +509,7 @@ namespaces:
             description: The position of the base 0 front, 1000 back
     
           - name: recline
-            type: movement_t
+            datatype: movement_t
             description: The position of the backrest 0 upright, 1000 flat
     
     enumerations:
@@ -792,15 +790,15 @@ structs:
     description: The complete position of a seat
     members:
       - name: base
-        type: movement_t
+        datatype: movement_t
         description: The position of the base 0 front, 1000 back
 
       - name: recline
-        type: movement_t
+        datatype: movement_t
         description: The position of the backrest 0 upright, 1000 flat
 
       - name: lumbar
-        type: movement_t
+        datatype: movement_t
         description: The position of the lumbar support
 ```
 
