@@ -5,6 +5,8 @@
 This document is licensed under Attribution 4.0 International License
 described [here](https://creativecommons.org/licenses/by/4.0/)
 
+[![Build Status](https://github.com/GENIVI/vehicle_service_catalog/actions/workflows/buildcheck.yml/badge.svg)](https://github.com/GENIVI/vehicle_service_catalog/actions/workflows/buildcheck.yml?query=branch%3Amaster)
+
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 **Table of Contents**
 

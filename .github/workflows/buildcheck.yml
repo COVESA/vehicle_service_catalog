@@ -1,0 +1,28 @@
+name: Run Unit Tests
+
+on: [push, pull_request]
+
+jobs:
+  buildtest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          python -V
+          pip install pyyaml
+          pip install pytest
+          pip install anytree
+          pip install jinja2
+
+      - name: Run example tool on latest VSC
+        run: |
+          git clone https://github.com/GENIVI/vsc-tools
+          python vsc-tools/model/vsc_generator.py comfort-service.yml simple_overview.tpl
+
