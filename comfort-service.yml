@@ -34,7 +34,7 @@ description: A collection of interfaces pertaining to cabin comfort.
 #
 includes:
   -  description: Include all error codes used by this namespace
-     file: global-errors.yml
+     file: vsc-error.yml
 
 # Create a separate namespace for movement-related datatypes and methods.
 # We can create additional namespaces for HVAC, ambient lighting, etc.
@@ -175,11 +175,15 @@ namespaces:
         description: |
           Set the desired seat position
 
-        in: # TODO FYI: Gunnar
+        in:
           - name: seat
             description: |
               The desired seat position
             datatype: seat_t
+
+        error:
+          datatype: .stdvsc.error_t
+          range: $ in_set("ok", "completed", "in_progress", "interrupted")
 
       - name: move_component
         description: |
@@ -203,6 +207,10 @@ namespaces:
               The desired position to move the component to
             datatype: movement_t
 
+        error:
+          datatype: .stdvsc.error_t
+          range: $ in_set("ok", "not_found", "busy")
+
       - name: current_position
         description: |
           Get the current position of the seat
@@ -222,6 +230,10 @@ namespaces:
             description: |
               The seat state that was requested
             datatype: seat_t
+
+        error:
+          datatype: .stdvsc.error_t
+          values: $ in_set("ok", "not_found")
 
     # EVENTS
     #

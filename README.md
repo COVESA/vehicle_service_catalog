@@ -14,6 +14,14 @@ described [here](https://creativecommons.org/licenses/by/4.0/)
 - [NAMESPACE VERSIONING](#namespace-versioning)
 - [NATIVE DATA TYPES](#native-data-types)
 - [ARRAYS](#arrays)
+- [VALUE RANGE SPECIFICATION](#value-range-specification)
+    - [Using regular expressions](#using-regular-expressions)
+    - [Using sets](#using-sets)
+    - [Using intervals](#using-intervals)
+    - [Range specification for native types](#range-specification-for-native-types)
+    - [Range specification for enumerations](#range-specification-for-enumerations)
+    - [Range specification for complex types](#range-specification-for-complex-types)
+    - [Range specifications for arrays](#range-specifications-for-arrays)
 - [RELATIVE VS. ABSOLUTE DEFINED DATA TYPE REFERENCE](#relative-vs-absolute-defined-data-type-reference)
     - [Local namespace data type](#local-namespace-data-type)
     - [Nested namespace data type](#nested-namespace-data-type)
@@ -59,11 +67,17 @@ described [here](https://creativecommons.org/licenses/by/4.0/)
             - [In parameter key-value: `description`](#in-parameter-key-value-description)
             - [In parameter key-value: `datatype`](#in-parameter-key-value-datatype)
             - [In parameter key-value: `arraysize`](#in-parameter-key-value-arraysize)
+            - [In parameter key-value: `range`](#in-parameter-key-value-range)
         - [Methods list object: `out`](#methods-list-object-out)
             - [Out parameter key-value: `name`](#out-parameter-key-value-name)
             - [Out parameter key-value: `description`](#out-parameter-key-value-description)
             - [Out parameter key-value: `datatype`](#out-parameter-key-value-datatype)
             - [Out parameter key-value: `arraysize`](#out-parameter-key-value-arraysize)
+            - [Out parameter key-value: `range`](#out-parameter-key-value-range)
+        - [Methods list object: `error`](#methods-list-object-error)
+            - [Error parameter key-value: `datatype`](#error-parameter-key-value-datatype)
+            - [Error parameter key-value: `arraysize`](#error-parameter-key-value-arraysize)
+            - [Error parameter key-value: `range`](#error-parameter-key-value-range)
     - [Namespace list object: `events`](#namespace-list-object-events)
         - [Event key-value: `name`](#event-key-value-name)
         - [Event key-value: `description`](#event-key-value-description)
@@ -72,11 +86,13 @@ described [here](https://creativecommons.org/licenses/by/4.0/)
             - [In parameter key-value: `description`](#in-parameter-key-value-description-1)
             - [In parameter key-value: `datatype`](#in-parameter-key-value-datatype-1)
             - [In parameter key-value: `arraysize`](#in-parameter-key-value-arraysize-1)
+            - [In parameter key-value: `range`](#in-parameter-key-value-range-1)
     - [Namespace list object: `properties`](#namespace-list-object-properties)
         - [Property key-value: `name`](#property-key-value-name)
         - [Property key-value: `description`](#property-key-value-description)
         - [Property key-value: `datatype`](#property-key-value-datatype)
         - [Property key-value: `arraysize`](#property-key-value-arraysize)
+        - [Property parameter key-value: `range`](#property-parameter-key-value-range)
     - [Namespace list object: `includes`](#namespace-list-object-includes)
         - [Include key-value: `file`](#include-key-value-file)
         - [Include key-value: `description`](#include-key-value-description)
@@ -196,9 +212,256 @@ The following syntax shall be used to declare an array:
 ```YAML
 # Array of datatype uint32, by default size of the array is undefined
 datatype: uint32[]
+
 # Optional: specified number of elements in the array
 arraysize: 5
 ```
+
+Only single-dimensional arrays are supported.
+
+---------------
+# VALUE RANGE SPECIFICATION
+
+Methods, events, and properties can optionally specify a range of
+legal value that their `in`, `out`, `error` and property can take.
+
+A range is specified as a list of values that are legal for a given
+parameter or property to have.
+
+Range definitions can be used to verify that the contract of a method,
+event, or property is not violated by transmitting illegal values
+between caller and callee, or publisher and subscriber in the case of
+properties.
+
+If `range` is omitted, any value that can be carried by the given
+datatype is a legal value.
+
+A range is specified as a string with a boolean expression consisting
+of relational operators and operands set to the value being verified.
+
+The `$` operand is the value being verified.
+
+String values are double quoted (`"`). Double quotes within a string are expressed as two double quotes (`""`).
+
+
+`$ == 10 or $ == 20`
+
+`$ in_set (1,3,4,5)`
+
+`$ <= 20`
+
+`$ == "a value"`
+
+`$ == "a ""double-quoted"" value"`
+
+`$ != 1.2 and ($ < 1.0 or $ > 1.4)`
+
+If the expression evaluates to true, the value is considered legal
+
+## Using regular expressions
+
+A range expression can use regular expressions to match against value patterns.
+
+`regex("^the_.+_value$") or regex("^a_.+value$") or $ == "something_else"`
+
+Examples of legal values in this case would be `the_first_value`,
+`the_second_value`, `a_1234_value`, `something_else`.
+
+
+## Using sets
+
+A range expression can have a set:
+
+`$ in_set (1,2,5,10)`
+
+In this case `1`, `2`, `5`, and `10` are legal values while any other
+values are illegal.
+
+A set can be strings:
+
+`$ in_set ("first", "second", "fourth")`
+
+**Note** A set cannot include a `regex()` expression.
+
+A set can be floats:
+
+`$ in_set (999.99, 11.2, 848222.442)`
+
+## Using intervals
+
+A range expression can have an interval:
+
+`$ in_interval (20,23)`
+
+In this case the legal values for the value are `20`, `21`, `22`, and `23`.
+
+For strings, lexigraphic intervals are used:
+
+`$ in_interval ("aaa", "aad")`
+
+In this case the legal values for the value are `aaa`, `aab`, `aac`, and `aad`.
+
+An inteval can be floats:
+
+`$ in_interval (-1.0, 1.0)`
+
+## Range specification for native types
+
+In its simplest form, a value range is specified as simple native data
+type comparisons relations, as shown below.
+
+```YAML
+methods:
+  - name: my_method
+    in:
+      - name: an_int_argument
+        datatype: int8
+        range: $ < 100 and $ > 10
+
+      - name: a_string_argument
+        datatype: string
+        range: $ == "hello" or $ == "world"
+```
+
+
+If the range expression, with `$` substituted by the value to verify, evaluates to true, then the value is legal.
+
+
+## Range specification for enumerations
+
+Parameters, errors, and properties that have an enum value specify
+their range using the the symbolic values, as shown below:
+
+
+```YAML
+enumerations:
+  - name: error_t
+    type: enumeration
+
+    datatype: int16
+    options:
+      - name: "null"
+        value: 0
+
+      - name: ok
+        value: 1
+
+      - name: in_progress
+        value: 2
+
+methods:
+  - name: my_method
+    error:
+      datatype: .stdvsc.error_t
+      # Symbolic enum value
+      range: $ == "ok" or $ == "in_progress"
+```
+
+
+## Range specification for complex types
+
+Complex (struct) values specify their ranges using member specification after the `$` token, as shown below
+
+```YAML
+structs:
+  - name: seat_location_t
+    members:
+      - name: row
+        datatype: uint8
+      - name: index
+        datatype: uint8
+
+methods:
+  - name: move
+    in:
+      - name: location
+        datatype: seat_location_t
+        range:  $.row >= 0 and $.row <= 3 and $.index in_interval(1, 10)
+```
+
+Nested complex types can be specified as well by using nested members:
+
+```YAML
+structs:
+  - name: inner_struct_t
+    members:
+      - name: inner_struct_value_1
+        datatype: int8
+
+      - name: inner_struct_value_2
+        datatype: int32
+
+  - name: outer_struct_t
+    members:
+      - name: outer_struct_value_1
+        datatype: string
+
+      - name: outer_struct_value_2
+        datatype: float
+
+      - name: an_inner_struct
+        datatype: inner_struct_t
+
+methods:
+  - name: my_function
+    in:
+      - name: my_complex_parameter
+        datatype: outer_struct
+        range: >
+            $.outer_struct_value_1 in_set("first", "second", "fourth", "eigth") and 
+            $.outer_struct_value_2 < 2.0 and
+            ( $.an_inner_struct.inner_struct_value_1 == 1 or
+              $.an_inner_struct.inner_struct_value_2 == 123456789 )
+```
+
+
+## Range specifications for arrays
+
+Range specifications for arrays are defined by adding an index
+(starting with `0`) to the `$` token, as shown below:
+
+
+```YAML
+methods:
+  - name: my_method
+    in:
+      - name: an_array_argument
+        datatype: int8[]
+        arraysize: 3
+        range: $[0] == 10 and $[1] == 20 and $[2] == 30
+```
+
+A range expression that uses an element index that does not exist in
+the tested value will render the expression false. This is especially
+important for unbound arrays where the value can host any number of
+elements.
+
+
+If the value is of a complex type where the type's members are arrays,
+a combination of member names and array indices can be used, as shown
+below:
+
+
+```YAML
+structs:
+  - name: struct_with_array_members_t
+    members:
+      - name: array_member_1
+        datatype: uint8[]
+        array_size: 10
+
+      - name: array_member_2
+        datatype: string[]
+        array_size: 5
+
+methods:
+  - name: my_method
+    in:
+      - name: my_argument
+        datatype: struct_with_array_members_t
+        range:  $.array_member_1[0] >= 0 and $.array_member_2[4] != "a value"
+```
+
 
 ---------------
 
@@ -281,7 +544,7 @@ turn hosts `second_level_nested_namespace`, which in its turn defines
 `my_typedef`,
 
 The `my_method` method can reference the defined data type by
-prefixing its name with a period-separated namepsace path to `my_typedef`:
+prefixing its name with a period-separated namespace path to `my_typedef`:
 
     datatype: nested_namespace.second_level_nested_namespace.my_typedef
 
@@ -486,11 +749,11 @@ major-version: 2
 minor-version: 1
 description: A collection of interfaces pertaining to cabin comfort.
 
-# Include generic error enumaration to reside directly
+# Include generic error enumeration to reside directly
 # under comfort namespace
 includes:
-  - file: global-errors.yml
-    description: Include all error codes used by this namespace
+  - file: vsc-error.yml
+    description: Include standard VSC error codes used by this namespace
 
 namespaces:
   - name: seats
@@ -634,7 +897,7 @@ member, or changed values in an enumeration option.
 Describes the minor version of the namespace.
 
 Major versions are bumped when data types, methods, events, or properties are added without impacting
-backwards compatability.
+backwards compatibility.
 
 A client expecting version 1.3 of a namespace can still use a version
 1.4 implementation of the namespace since it only has additions and no
@@ -1006,13 +1269,13 @@ Contains a description of the enum option.
 ----------------------
 
 ## Namespace list Object: `methods`
-|                        |                   |
-|:-----------------------|:------------------|
-| **Hosted by**          | `namespaces` list |
-| **Mandatory Keys**     | `name`            |
-| **Optional keys**      | `description`     |
-| **Mand. hosted lists** | N/A               |
-| **Opt. hosted lists**  | `in`, `out`       |
+|                        |                      |
+|:-----------------------|:---------------------|
+| **Hosted by**          | `namespaces` list    |
+| **Mandatory Keys**     | `name`               |
+| **Optional keys**      | `description`        |
+| **Mand. hosted lists** | N/A                  |
+| **Opt. hosted lists**  | `in`, `out`, `error` |
 
 Each `methods` list object specifies a method call, executed by a
 single server instance, that optionally returns a value. 
@@ -1029,15 +1292,22 @@ methods:
       - name: row
         description: The desired seat to row query
         datatype: uint8
+        range: $ < 10 and $ > 2
 
       - name: index
         description: The desired seat index to query
         datatype: uint8
+        range: $ in_interval(1,4)
 
     out:
       - name: seat
         description: The state of the requested seat
         datatype: seat_t
+
+    error:
+      datatype: .stdvsc.error_t
+      range: $ in_set("ok", "in_progress", "permission_denied")
+
 ```
 
 ### Methods key-value: `name`
@@ -1059,16 +1329,17 @@ Defines the name of the method.
 Specifies a description of the method.
 
 ### Methods list object: `in`
-|                    |                       |
-|:-------------------|:----------------------|
-| **Hosted by**      | `methods` list object |
-| **Mandatory Keys** | `name`, `datatype`    |
-| **Optional keys**  | `description`,`value` |
+|                    |                                |
+|:-------------------|:-------------------------------|
+| **Hosted by**      | `methods` list object          |
+| **Mandatory Keys** | `name`, `datatype`             |
+| **Optional keys**  | `description`,`value`, `range` |
 
 Each `in` list object defines an input parameter to the method
 
 Please see the `methods` sample code above for an example of how 
 `in` parameter lists are used
+
 
 #### In parameter key-value: `name`
 |                  |         |
@@ -1121,14 +1392,26 @@ Specifies the number of elements in the input parameter array.
 This key is only allowed if the `datatype` element specifies an array
 (ending with `[]`).
 
+#### In parameter key-value: `range`
+|                  |                             |
+|:-----------------|:----------------------------|
+| **YAML Type**    | string                      |
+| **Mandatory**    | No                          |
+| **Lark grammar** | [See separate grammar file] |
+
+
+Specifies the legal range for the value.
+
+Please see [value range specification](#value-range-specification)
+chapter for details on how to specify ranges.
 
 
 ### Methods list object: `out`
-|                    |                       |
-|:-------------------|:----------------------|
-| **Hosted by**      | `methods` list object |
-| **Mandatory Keys** | `name`, `datatype`    |
-| **Optional keys**  | `description`,`value` |
+|                    |                               |
+|:-------------------|:------------------------------|
+| **Hosted by**      | `methods` list object         |
+| **Mandatory Keys** | `name`, `datatype`            |
+| **Optional keys**  | `description`,`value`,`range` |
 
 Each `out` list object defines an output parameter to the method
 
@@ -1184,6 +1467,92 @@ Specifies the number of elements in the output parameter array.
 
 This key is only allowed if the `datatype` element specifies an array
 (ending with `[]`).
+
+
+#### Out parameter key-value: `range`
+|                  |                             |
+|:-----------------|:----------------------------|
+| **YAML Type**    | string                      |
+| **Mandatory**    | No                          |
+| **Lark grammar** | [See separate grammar file] |
+
+
+Specifies the legal range for the value.
+
+Please see [value range specification](#value-range-specification)
+chapter for details on how to specify ranges.
+
+
+### Methods list object: `error`
+|                    |                               |
+|:-------------------|:------------------------------|
+| **Hosted by**      | `methods` list object         |
+| **Mandatory Keys** | `datatype`                    |
+| **Optional keys**  | `range`, `arraysize`, `range` |
+
+
+The optional `error` element defines an error value to return. The
+`error` element is returned in addition to any `out` elements
+specified for the method call.
+
+Please see the `methods` sample code above for an example of how
+`error` parameter lists are used
+
+If no `error` element is specified, no specific error code is
+returned. Results may still be returned as an `out` parameter`
+
+**Note** `error` specifies return values for the method call
+itself. Transport-layer issues arising from interrupted communication,
+services going down, etc, are handled on a language-binding level
+where each langauage library implements their own way of detecting,
+reporting, and recovering from network-related errors.
+
+#### Error parameter key-value: `datatype`
+|                  |                                 |
+|:-----------------|:--------------------------------|
+| **YAML Type**    | string                          |
+| **Mandatory**    | Yes                             |
+| **Lark grammar** | `"."? CNAME ("." CNAME)* "[]"?` |
+
+Specifies the data type of the returned error value,
+
+The type can be either a native or defined type.
+
+If `datatype` refers to a defined type, this type can be a
+local, nested, or externally defined reference.
+
+If the type is an array (ending with `[]`), the `arraysize` key can
+optionally be provided to specify the number of elements in the array.
+
+If `arraysize` is not specified for an array type, the member array
+can contain an arbitrary number of elements.
+
+
+#### Error parameter key-value: `arraysize`
+|                  |                    |
+|:-----------------|:-------------------|
+| **YAML Type**    | int                |
+| **Mandatory**    | No                 |
+| **Lark grammar** | [positive integer] |
+
+Specifies the number of elements in the input parameter array.
+
+This key is only allowed if the `datatype` element specifies an array
+(ending with `[]`).
+
+#### Error parameter key-value: `range`
+|                  |                             |
+|:-----------------|:----------------------------|
+| **YAML Type**    | string                      |
+| **Mandatory**    | No                          |
+| **Lark grammar** | [See separate grammar file] |
+
+
+Specifies the legal range for the value.
+
+Please see [value range specification](#value-range-specification)
+chapter for details on how to specify ranges.
+
 
 ----------------------
 
@@ -1247,11 +1616,11 @@ Defines the name of the event.
 Specifies a description of the event.
 
 ### Event list object: `in`
-|                    |                       |
-|:-------------------|:----------------------|
-| **Hosted by**      | `methods` list object |
-| **Mandatory Keys** | `name`, `datatype`    |
-| **Optional keys**  | `description`,`value` |
+|                    |                                |
+|:-------------------|:-------------------------------|
+| **Hosted by**      | `methods` list object          |
+| **Mandatory Keys** | `name`, `datatype`             |
+| **Optional keys**  | `description`,`value`, `range` |
 
 Each `in` list object defines an input parameter to the event
 
@@ -1276,6 +1645,7 @@ Specifies the name of the input parameter
 | **Lark grammar** | [YAML string] |
 
 Contains a description of the input parameter.
+
 
 #### In parameter key-value: `datatype`
 |                  |                                 |
@@ -1309,6 +1679,20 @@ Specifies the number of elements in the input parameter array.
 This key is only allowed if the `datatype` element specifies an array
 (ending with `[]`).
 
+#### In parameter key-value: `range`
+|                  |                             |
+|:-----------------|:----------------------------|
+| **YAML Type**    | string                      |
+| **Mandatory**    | No                          |
+| **Lark grammar** | [See separate grammar file] |
+
+
+Specifies the legal range for the value.
+
+Please see [value range specification](#value-range-specification)
+chapter for details on how to specify ranges.
+
+
 --------------------
 
 ## Namespace list object: `properties`
@@ -1316,8 +1700,8 @@ This key is only allowed if the `datatype` element specifies an array
 |                        |                            |
 |:-----------------------|:---------------------------|
 | **Hosted by**          | `namespaces` list          |
-| **Mandatory Keys**     | `name`, `datatype`, `type` |
-| **Optional keys**      | `description`              |
+| **Mandatory Keys**     | `name`, `datatype` |
+| **Optional keys**      | `description`, `range`     |
 
 Each `properties` list object specifies a shared state object that can
 be read and set, and which is available to all subscribing entities.
@@ -1334,15 +1718,15 @@ structs
         datatype: uint8
 
       - name: red
-        descption: The amount of red in the dome light color (0 - no, 255 full red)
+        description: The amount of red in the dome light color (0 - no, 255 full red)
         datatype: uint8
 
       - name: green
-        descption: The amount of green in the dome light color (0 - no, 255 full green)
+        description: The amount of green in the dome light color (0 - no, 255 full green)
         datatype: uint8
 
       - name: blue
-        descption: The amount of blue in the dome light color (0 - no, 255 full blue)
+        description: The amount of blue in the dome light color (0 - no, 255 full blue)
         datatype: uint8
 
 properties:
@@ -1402,6 +1786,21 @@ Specifies the number of elements in the input parameter array.
 This key is only allowed if the `datatype` element specifies an array
 (ending with `[]`).
 
+
+### Property parameter key-value: `range`
+|                  |                             |
+|:-----------------|:----------------------------|
+| **YAML Type**    | string                      |
+| **Mandatory**    | No                          |
+| **Lark grammar** | [See separate grammar file] |
+
+
+Specifies the legal range for the property.
+
+Please see [value range specification](#value-range-specification)
+chapter for details on how to specify ranges.
+
+
 --------------------
 
 ## Namespace list object: `includes`
@@ -1424,24 +1823,46 @@ lists in the hosting namespace.
 A `includes` sample list object is given below, with global error codes installed under
 the `top_level_namespace` namespace that hosts the `includes` list object:
 
-**File: `global_error_codes.yml`**
+**File: `vsc-error.yml`**
 
 ```YAML
-name: global_error
+name: stdvsc
+major-version: 1
+minor-version: 0
+description: Standard error codes.
+
 enumerations:
-  - name: code
+  #
+  # Error enumeration
+  #
+  - name: error_t
+    type: enumeration
+
+    datatype: int16
     options:
-      - name: ok
+      - name: null
         value: 0
+        description: No return value
 
-      - name: unknown_entity
+      - name: ok
         value: 1
+        description: No error.
 
-      - name: incorrect_state
+      - name: in_progress
         value: 2
+        description: The operation has been initialized and is in progress
 
-      - name: general_error
+      - name: completed
         value: 3
+        description: The operation has been completed
+
+      - name: permission_denied
+        value: -1
+        description: Caller does not have permission to carry out operation
+
+      - name: not_found
+        value: -2
+        description: A resource or service was not found
 ```
 
 **File: `hvac_sample.yml`**
@@ -1450,7 +1871,7 @@ enumerations:
 namespaces:
   - name: top_level_namespace
     includes
-    - file: global_error_codes.yml;
+    - file: vsc-error.yml;
       description: Global error used by methods in this file
 
   - name: hvac_namespace
@@ -1465,7 +1886,7 @@ namespaces:
 
           - name: result
             description: The result of the operation
-            datatype: .top_level_namespace.global_error.code
+            datatype: .stdvsc.error_t
 ```
 
 ### Include key-value: `file`

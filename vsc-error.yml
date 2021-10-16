@@ -1,0 +1,103 @@
+#
+# Copyright 2021, Magnus Feuer
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+
+#
+# Standard Vehicle Service Catalog error codes.
+#
+---
+
+#
+# The stdvsc namespace is composed of several standard files that all
+# install their entries in the same stdvsc namespace.
+#
+name: stdvsc
+major-version: 1
+minor-version: 0
+description: Standard error codes.
+
+enumerations:
+  # 
+  # Error enumeration
+  #
+  - name: error_t
+    type: enumeration
+
+    datatype: int16
+    options:
+        #
+        # Null / no return value
+        #
+      - name: null
+        value: 0
+        description: No return value
+        
+        #
+        # Positive success codes
+        # 
+      - name: ok
+        value: 1
+        description: No error.
+
+      - name: in_progress
+        value: 2
+        description: The operation has been initialized and is in progress
+
+      - name: completed
+        value: 3
+        description: The operation has been completed
+
+        #
+        # Negative error codes
+        # 
+      - name: permission_denied
+        value: -1
+        description: Caller does not have permission to carry out operation
+
+      - name: not_found
+        value: -2
+        description: A resource or service was not found
+
+      - name: busy
+        value: -3
+        description: A resource or service needed for the operation is currently busy
+
+      - name: invalid_argument
+        value: -4
+        description: One or more of the provided arguments are invalid
+
+      - name: incorrect_state
+        value: -5
+        description: The service is not in the correct state to perform operation
+
+      - name: no_resource
+        value: -6
+        description: There are not enough resources to perform operation
+
+      - name: expired 
+        value: -7
+        description: The session or resource has expired and is no longer available
+
+      - name: no_service
+        value: -8
+        description: The service or one of its dependent-upon services are not available
+
+      - name: not_supported
+        value: -9
+        description: The operation is not supported by service implementation
+
+      - name: lost_arbitration
+        value: -10
+        description: The operation was rejected in favor of a competing operation
+
+      - name: interrupted
+        value: -11
+        description: The operation was interrupted
+
+      - name: other
+        value: -12
+        description: Other error
