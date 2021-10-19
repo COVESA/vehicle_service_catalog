@@ -128,6 +128,8 @@ namespaces:
       # effectively giving it a new name.
       - name: relative_movement_t
         datatype: movement_t
+        description: |
+          The relative movement of a seat component
 
 
     enumerations:
@@ -154,6 +156,8 @@ namespaces:
             value: 3
           - name: head_restraint
             value: 4
+        description: |
+          Current seat component
 
     # METHODS
     #
@@ -175,7 +179,7 @@ namespaces:
           - name: seat
             description: |
               The desired seat position
-            datatype: movement.seat_t
+            datatype: seat_t
 
       - name: move_component
         description: |
@@ -189,15 +193,15 @@ namespaces:
           - name: seat
             description: |
               The seat location to change
-            datatype: movement.seat_location_t
+            datatype: seat_location_t
           - name: component
             description: |
               The component position to change
-            datatype: movement.seat_component_t
+            datatype: seat_component_t
           - name: position
             description: |
               The desired position to move the component to
-            datatype: movement.movement_t
+            datatype: movement_t
 
       - name: current_position
         description: |
@@ -217,7 +221,7 @@ namespaces:
           - name: seat
             description: |
               The seat state that was requested
-            datatype: movement.seat_t
+            datatype: seat_t
 
     # EVENTS
     #
@@ -252,7 +256,7 @@ namespaces:
           - name: component
             description: |
               The seat component that is moving
-            datatype: movement.seat_component_t
+            datatype: seat_component_t
 
       - name: passenger_present
         description: |
