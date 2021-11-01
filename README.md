@@ -315,12 +315,12 @@ nested namespace access since `external_namespace` lives parallel to
 `my_namespace` and is not nested inside it.
 
 This is resolved by specifying an absolute path to the defined
-dataype, which is identical to a a nested namespace path
+datatype, which is identical to a a nested namespace path
 apart from being prefixed with a period:
 
     datatype: .external_namespace.nested_namespace.my_typedef
     
-This syntax allows any defined data type anyehwere in the tree to be used.
+This syntax allows any defined data type anywhere in the tree to be used.
 
 -----------------------
 
@@ -420,7 +420,7 @@ name: comfort
 ## Deployment file object list extensions
 
 If a deployment file's object list element (e.g. `events`) is also
-defiend in the VSC file, the VSC's list will traversed recursively and
+defined in the VSC file, the VSC's list will traversed recursively and
 extended by the deployment file's corresponding list.
 
 **FIXME** Possibly add description on how various edge cases are resolved.
@@ -619,7 +619,7 @@ Describes the major version of the namespace.
 
 Major versions are bumped when an existing data type, method, event,
 or property hosted by the namespace has its signature changed in a non
-backward-compatibl way.
+backward-compatible way.
 
 Examples are changed datatypes for an input parameter, an added struct
 member, or changed values in an enumeration option.
@@ -1200,7 +1200,7 @@ This key is only allowed if the `datatype` element specifies an array
 Each `events` list object specifies a fire-and-forget call, executed
 by zero or more subscribing instances, that does not return a value.
 
-Executtion is best effort to UDP level with server failures not being
+Execution is best effort to UDP level with server failures not being
 reported.
 
 A `events` sample list object is given below:
