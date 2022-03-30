@@ -1,5 +1,6 @@
 #
-# Copyright 2020, Jaguar Land Rover,
+# Copyright 2022, Robert Bosch GmbH
+# Copyright 2020, Jaguar Land Rover
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -26,9 +27,9 @@
 
 ---
 name: comfort
-major-version: 2
-minor-version: 1
-description: A collection of interfaces pertaining to cabin comfort.
+major-version: 3
+minor-version: 0
+description: A collection of interfaces pertaining to cabin comfort, intended to be aligned with corresponding VSS signals.
 
 # Include another VSC file into the current "comfort" namespace
 #
@@ -55,27 +56,54 @@ namespaces:
         description: |
           The position of the entire seat
         members:
-          - name: base
-            datatype: movement_t
+          - name: position
+            datatype: uint16
             description: |
-              The position of the base 0 front, 1000 back
-          - name: cushion
-            datatype: movement_t
+              Seat position on vehicle x-axis. Position is in millimeters relative to the frontmost position supported by the seat.
+              0 = Frontmost position supported.
+          - name: height
+            datatype: uint16
             description: |
-              The position of the cushion 0 short, 1000 long
-          - name: lumbar
-            datatype: movement_t
+              Seat position on vehicle z-axis. Position is in millimeters relative within available movable range of the seating.
+              0 = Lowermost position supported.
+          - name: tilt
+            datatype: float
             description: |
-              The position of the lumbar support
-          - name: side_bolster
-            datatype: movement_t
+              Tilting of seat in degrees relative to vehicle z-axis. 0 = seating is flat, seat and vehicle z-axis are parallel.
+              Positive degrees = seat tilted backwards, seat z-axis is tilted backward.
+          - name: backrest_recline
+            datatype: float
             description: |
-              The position of the side bolster
-          - name: head_restraint
-            datatype: movement_t
+              Backrest recline in degrees compared to seat z-axis (seat vertical axis).
+              0 degrees = Upright/Vertical backrest.
+              Negative degrees for forward recline. Positive degrees for backward recline.
+          - name: backrest_lumbar_support
+            datatype: percent_float_t
             description: |
-              The position of the head restraint 0 down, 1000 up
-
+              Lumbar support (in/out position) in percent. 0 = Innermost position. 100 = Outermost position.
+          - name: backrest_lumbar_height
+            datatype: uint8
+            description: |
+              Height of lumbar support in millimeters. Position is relative within available movable range of the lumbar support.
+              0 = Lowermost position supported.
+          - name: backrest_sidebolster_support
+            datatype: percent_float_t
+            description: |
+              Side bolster support in percent. 0 = Minimum support (widest side bolster setting).
+              100 = Maximum support.
+          - name: seating_length
+            datatype: uint16
+            description: |
+              Length adjustment of seating in millimeters. 0 = Adjustable part of seating in rearmost position
+              (Shortest length of seating).
+          - name: headrest_height
+            datatype: uint8
+            description: |
+              Position of headrest in millimeters relative to movable range of the head rest. 0 = Bottommost position supported.
+          - name: headrest_angle
+            datatype: float
+            description: |
+              Headrest angle in degrees, relative to backrest, 0 degrees if parallel to backrest, Positive degrees = tilted forward.
       #
       # Seat location
       #
@@ -86,11 +114,11 @@ namespaces:
           - name: row
             datatype: uint8
             description: |
-              The row, front 0 and +1 toward rear
+              The row, front 1 and +1 toward rear
           - name: index
             datatype: uint8
             description: |
-              The index within the row, 0 left most, +1 toward right
+              The index within the row, 1 left most (as seen looking forward), +1 toward right
 
 
       - name: seat_t
@@ -107,7 +135,7 @@ namespaces:
           - name: position
             datatype: position_t
             description: |
-              The various positions of the seat
+              The various aspects of the seat
 
 
     # Typedefs
@@ -117,11 +145,10 @@ namespaces:
     #
     typedefs:
       - name: movement_t
-        datatype: int16
-        min: -1000
-        max: 1000
+        datatype: float
         description: |
-          The movement of a seat component
+          The movement of a seat component. Limits and resolution varies depending on aspect changed,
+          and typically is vehicle dependent.
 
 
       # We can also redefine an existing type,
@@ -130,6 +157,14 @@ namespaces:
         datatype: movement_t
         description: |
           The relative movement of a seat component
+          
+          
+      - name: percent_float_t
+        datatype: float
+        min: 0
+        max: 100
+        description: |
+          Percent represented as float with range restricted from  0 to 100.
 
 
     enumerations:
@@ -146,16 +181,26 @@ namespaces:
       - name: seat_component_t
         datatype: uint8  # Should probably be moved to deployment file
         options:
-          - name: base
+          - name: position
             value: 0
-          - name: cushion
+          - name: height
             value: 1
-          - name: lumbar
+          - name: tilt
             value: 2
-          - name: side_bolster
+          - name: backrest_recline
             value: 3
-          - name: head_restraint
+          - name: backrest_lumbar_support
             value: 4
+          - name: backrest_lumbar_height
+            value: 5
+          - name: backrest_sidebolster_support
+            value: 6
+          - name: seating_length
+            value: 7
+          - name: headrest_height
+            value: 8
+          - name: headrest_angle
+            value: 9
         description: |
           Current seat component
 
@@ -182,8 +227,15 @@ namespaces:
             datatype: seat_t
 
         error:
-          datatype: .stdvsc.error_t
-          range: $ in_set("ok", "completed", "in_progress", "interrupted")
+          - description: |
+              "ok" - requested seat movement has been executed successfully
+              "invalid_argument" - any argument out of range supported by vehicle
+              "not_found" - addressed seat not available/existing
+              "interrupted" - operation interrupted
+              "busy" - seat service is currently busy
+              "other" - internal error in implementation
+            datatype: .stdvsc.error_t
+            range: $ in_set("ok", "invalid_argument", "not_found", "interrupted", "busy", "other")
 
       - name: move_component
         description: |
@@ -208,8 +260,15 @@ namespaces:
             datatype: movement_t
 
         error:
-          datatype: .stdvsc.error_t
-          range: $ in_set("ok", "not_found", "busy")
+          - description: |
+              "ok" - requested seat movement has been executed successfully
+              "invalid_argument" - any argument out of range supported by vehicle
+              "not_found" - addressed seat not available/existing
+              "interrupted" - operation interrupted
+              "busy" - seat service is currently busy
+              "other" - internal error in implementation
+            datatype: .stdvsc.error_t
+            range: $ in_set("ok", "invalid_argument", "not_found", "interrupted", "busy", "other")
 
       - name: current_position
         description: |
@@ -218,11 +277,11 @@ namespaces:
         in:
           - name: row
             description: |
-              The desired seat to row query
+              The desired seat row to query, front 1 and +1 toward rear
             datatype: uint8
           - name: index
             description: |
-              The desired seat index to query
+              The desired seat index to query,  1 left most (as seen looking forward), +1 toward right
             datatype: uint8
 
         out:
@@ -232,8 +291,15 @@ namespaces:
             datatype: seat_t
 
         error:
-          datatype: .stdvsc.error_t
-          values: $ in_set("ok", "not_found")
+          - description: |
+              "ok" - requested seat movement has been executed successfully
+              "invalid_argument" - any argument out of range supported by vehicle
+              "not_found" - addressed seat not available/existing
+              "other" - internal error in implementation
+              It is assumed that this operation does not need unique resources and returns immediately,
+              so no need to support "interrupted" and "busy" as errors.
+            datatype: .stdvsc.error_t
+            range: $ in_set("ok", "invalid_argument", "not_found", "other")
 
     # EVENTS
     #
@@ -259,11 +325,11 @@ namespaces:
             datatype: uint8
           - name: row
             description: |
-              The row of the seat
+              The row of the seat,  front 1 and +1 toward rear
             datatype: uint8
           - name: index
             description: |
-              The index of the seat position in the row
+              The index of the seat position in the row,  1 left most (as seen looking forward), +1 toward right
             datatype: uint8
           - name: component
             description: |
@@ -280,11 +346,11 @@ namespaces:
             datatype: boolean
           - name: row
             description: |
-              The row of the seat
+              The row of the seat, front 1 and +1 toward rear
             datatype: uint8
           - name: index
             description: |
-              The index of the seat position in the row
+              The index of the seat position in the row,  1 left most (as seen looking forward), +1 toward right
             datatype: uint8
 
 
