@@ -34,22 +34,30 @@ enumerations:
         #
       - name: null
         value: 0
-        description: No return value
+        description: No return value. Shall be used only as default value, shall never be explicitly returned
+                     by a service implementation.
         
         #
         # Positive success codes
         # 
       - name: ok
         value: 1
-        description: No error.
+        description: Operation succeeded. Definition of success is method dependent.
+                     Depending on operation, it can either indicate that the request was accepted or that the
+                     corresponding physical operation (e.g. FOTA update, seat movement) has succeeded.
 
       - name: in_progress
         value: 2
-        description: The operation has been initialized and is in progress
+        description: The operation has been initialized and is in progress.
+                     May only be used by implementation framework and shall never be explicitly returned
+                     by a service implementation.
 
-      - name: completed
-        value: 3
-        description: The operation has been completed
+# Do we see a need to differentiate between ok and completed
+# Or shall we keep them but never specify both for an individual method, assuming that an individual method only can
+# return once. 
+#       - name: completed
+#        value: 3
+#        description: The operation has been completed
 
         #
         # Negative error codes
@@ -60,7 +68,7 @@ enumerations:
 
       - name: not_found
         value: -2
-        description: A resource or service was not found
+        description: A resource or service was not found, e.g. the addressed instance was not found or does not exist.
 
       - name: busy
         value: -3
@@ -68,7 +76,7 @@ enumerations:
 
       - name: invalid_argument
         value: -4
-        description: One or more of the provided arguments are invalid
+        description: One or more of the provided arguments are invalid, e.g. outside supported range.
 
       - name: incorrect_state
         value: -5
