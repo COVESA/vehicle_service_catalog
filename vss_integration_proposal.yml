@@ -10,7 +10,10 @@
 # A proposal for how we can translate VSS signals to properties.
 #
 # Each branch is a namespace, and signals are defined as properties within those
-# namespaces
+# namespaces. As VSC considers all properties as readable and writeable there is no possibility to translate the VSS
+# type (i.e. attribute, sensor or actuator) into Yaml. That does instead need to be managed by access rights in VSC
+# implementations. No client shall e.g. have access right to write VIN, and even if they would the result would be
+# the same - any attempt on writing should result in an error indicating "not supported"
 
 
 # From VSS :
@@ -40,7 +43,6 @@ namespaces:
         properties:
           - name: VIN
             description: 17-character Vehicle Identification Number (VIN) as defined by ISO 3779
-            type: attribute
             datatype: string # VSS should have same native types as VSC
 
 
