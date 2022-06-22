@@ -75,6 +75,7 @@ described [here](https://creativecommons.org/licenses/by/4.0/)
             - [Out parameter key-value: `arraysize`](#out-parameter-key-value-arraysize)
             - [Out parameter key-value: `range`](#out-parameter-key-value-range)
         - [Methods list object: `error`](#methods-list-object-error)
+            - [Error parameter key-value: `description`](#error-parameter-key-value-description)
             - [Error parameter key-value: `datatype`](#error-parameter-key-value-datatype)
             - [Error parameter key-value: `arraysize`](#error-parameter-key-value-arraysize)
             - [Error parameter key-value: `range`](#error-parameter-key-value-range)
@@ -1484,7 +1485,7 @@ chapter for details on how to specify ranges.
 |:-------------------|:------------------------------|
 | **Hosted by**      | `methods` list object         |
 | **Mandatory Keys** | `datatype`                    |
-| **Optional keys**  | `range`, `arraysize`, `range` |
+| **Optional keys**  | `range`, `arraysize`, `description` |
 
 
 The optional `error` element defines an error value to return. The
@@ -1549,6 +1550,15 @@ Specifies the legal range for the value.
 Please see [value range specification](#value-range-specification)
 chapter for details on how to specify ranges.
 
+
+### Error parameter key-value: `description`
+|                  |               |
+|:-----------------|:--------------|
+| **YAML Type**    | string        |
+| **Mandatory**    | No            |
+| **Lark grammar** | [YAML string] |
+
+Specifies a description of how the errors shall be used.
 
 ----------------------
 
