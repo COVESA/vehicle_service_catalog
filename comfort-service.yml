@@ -292,7 +292,7 @@ namespaces:
 
         error:
           - description: |
-              "ok" - requested seat movement has been executed successfully
+              "ok" - current position of selected seat has been returned
               "invalid_argument" - any argument out of range supported by vehicle
               "not_found" - addressed seat not available/existing
               "other" - internal error in implementation
@@ -362,12 +362,13 @@ namespaces:
     # across one or more subscribers. They are equivalent to
     # MQTT topics or SOME/IP fields.
     #
+    # In VSC all properties are considered to be read/write
+    #
     # TODO: Define relationship, rules, and semantics
     #       between properties and VSS signals.
     #       See vss_integration_proposal.yml for one solution.
     #
     properties:
-      - name: a_property # Will this be acceptable?
+      - name: a_property
         description: A signal
-        type: attribute # or sensor.
-        datatype: uint8 # Native datatypes only?
+        datatype: uint8
