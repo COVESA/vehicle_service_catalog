@@ -33,8 +33,8 @@ described [here](https://creativecommons.org/licenses/by/4.0/)
     - [Key-Object: `namespaces`](#key-object-namespaces)
         - [Namespace key-value: `name`](#namespace-key-value-name)
         - [Namespace key-value: `description`](#namespace-key-value-description)
-        - [Namespace key-value: `major-version`](#namespace-key-value-major-version)
-        - [Namespace key-value: `minor-version`](#namespace-key-value-minor-version)
+        - [Namespace key-value: `major-version`](#namespace-key-value-major_version)
+        - [Namespace key-value: `minor-version`](#namespace-key-value-minor_version)
     - [Namespace list object: `typedefs`](#namespace-list-object-typedefs)
         - [Typedef key-value: `name`](#typedef-key-value-name)
         - [Typedef key-value: `description`](#typedef-key-value-description)
@@ -147,7 +147,7 @@ The following features are yet to be determined:
 # NAMESPACE VERSIONING
 
 VSC namespaces can optionally have a major and minor version,
-specified by `major-version` and `minor-version` keys.
+specified by `major_version` and `minor_version` keys.
 
 Namespace version management lets a client implementation have
 expectations that a server implementation will support a specific
@@ -741,8 +741,8 @@ A complete VSC file example is given below:
 ```YAML
 ---
 name: comfort
-major-version: 2
-minor-version: 1
+major_version: 2
+minor_version: 1
 description: A collection of interfaces pertaining to cabin comfort.
 
 # Include generic error enumeration to reside directly
@@ -821,7 +821,7 @@ imported from
 |:-----------------------|:----------------------------------------------------------------------------------------------------|
 | **Hosted by**          | `namespaces` list, [root element]                                                                   |
 | **Mandatory keys**     | `name`                                                                                              |
-| **Optional keys**      | `description`, `major-version`, `minor-version`                                                     |
+| **Optional keys**      | `description`, `major_version`, `minor_version`                                                     |
 | **Opt. hosted lists**  | `namespaces`, `includes`, `typedefs`,  `structs`, `enumerations`, `methods`, `events`, `properties` |
 | **Mand. hosted lists** | N/A                                                                                                 |
 
@@ -844,8 +844,8 @@ A namespace example is given below.
 ```YAML
 namespaces:
   - name: seats
-    major-version: 1
-    minor-version: 3
+    major_version: 1
+    minor_version: 3
     description: Seat interface and datatypes.
 ```
 
@@ -867,7 +867,7 @@ Specifies the name of the namespace.
 
 A description of the namespace.
 
-### Namespace key-value: `major-version`
+### Namespace key-value: `major_version`
 |                  |                |
 |:-----------------|:---------------|
 | **YAML Type**    | integer        |
@@ -883,7 +883,7 @@ backward-compatible way.
 Examples are changed datatypes for an input parameter, an added struct
 member, or changed values in an enumeration option.
 
-### Namespace key-value: `minor-version`
+### Namespace key-value: `minor_version`
 |                  |                |
 |:-----------------|:---------------|
 | **YAML Type**    | integer        |
@@ -1823,8 +1823,8 @@ the `top_level_namespace` namespace that hosts the `includes` list object:
 
 ```YAML
 name: stdvsc
-major-version: 1
-minor-version: 0
+major_version: 1
+minor_version: 0
 description: Standard error codes.
 
 enumerations:
