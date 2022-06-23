@@ -27,8 +27,8 @@
 
 ---
 name: comfort
-major-version: 3
-minor-version: 0
+major_version: 3
+minor_version: 0
 description: A collection of interfaces pertaining to cabin comfort, intended to be aligned with corresponding VSS signals.
 
 # Include another VSC file into the current "comfort" namespace
