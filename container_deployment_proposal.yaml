@@ -1,0 +1,91 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright (C) 2022 EPAM Systems, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+service_uid: 8dc0c1d0-aac9-4d9d-89b8-fed0ac5fc7b2
+
+default_state:
+  filename: state.dat
+
+# list of layer aliases
+layers:
+  - layer1
+  - layer2
+  - layer3
+
+# Execute environments
+env:
+  - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  - VAR1=test
+  - VAR2
+
+# Strartup command
+cmd: hellop_world -c /config.txt
+
+workingDir: /
+
+# Requested quotas
+quotas:
+  cpu: 50
+  mem: 2KB
+  state: 64KB
+  storage: 64KB
+  upload_speed: 32Kb
+  download_speed: 32Kb
+  upload: 1GB
+  download: 1GB
+  temp: 32KB
+
+# Hostname used in the container
+hostname: my-container
+
+# IP port list to expose
+exposedPorts:
+  - port: $ in_interval(8080,8090)
+    protocol: tcp
+  - port: 1515
+    protocol: udp
+  - port: 9000
+
+# allow connection to service from another SP serviceUID/port/optional protocol
+allowedConnections:
+  - serviceid : xxxx-yyyy
+    port: $ in_interval(8080,8088)
+    protocol: tcp
+  - serviceid: xxxx-yyyy
+    port: 1515
+    protocol: udp
+
+# Requested devices
+devices:
+  - name: camera0
+    mode: rwm
+
+# Resources
+resources:
+  - system-dbus
+  - bluetooth
+
+# Permissions for functional servers
+permissions:
+  # functional server name
+  vis:
+    # functionality name: access mode
+    Attribute.Body.Vehicle.VIN: "r"
+    Signal.Doors.*: "r"
+  systemCore:
+    Services.Restart: "w"
+    SomeRole: "rw"
