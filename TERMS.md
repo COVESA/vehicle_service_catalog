@@ -34,6 +34,24 @@ _>	(To be further determined - how complete is our include/reference concept?)_
 	- It is not specified by VSC how errors are propagated - this translation is target language/environment specific.
 		- It may be added as return/output parameters in one programming language and translated to **Exception**-handling in another.  Communication protocols may implement their own error-condition channels and approaches.
 
+## Target environment
+
+- This is a catch-all term to indicate the context and environment of those
+artifacts that are generated from source IDL.  
+- For each type of output stemming from a generator or conversion tool, there
+will be environment-specific details to consider, and in the documentation we
+often refer to all of those as simply the "target environment".
+- The term thus signifies any and all things that are unique about that environment.
+
+For example:
+ - The chosen programming language in the case of code-generation tools.
+ - Details pertaining to other levels of software technology that is being
+ targeted.  For example if a particular protocol is applicable in the output,
+ such as HTTP, details of transport layer security (TLS) would apply, whereas
+ for other protocols it might not.
+
+N.B. In the text, "target-environment dependent", may sometimes be shortened to simply target-dependent.
+
 ----
 
 NEW 2022-08-08:
