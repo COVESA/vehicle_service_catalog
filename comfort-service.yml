@@ -43,7 +43,7 @@ includes:
 namespaces:
   - name: seats
     description: Seat interface and datatypes.
-    
+
     # Defines all structs hosted by the `seats` namespace.
     # Standard structs can be defind, using either native types, typedefs,
     # or other (nested) structs.
@@ -157,8 +157,8 @@ namespaces:
         datatype: movement_t
         description: |
           The relative movement of a seat component
-          
-          
+
+
       - name: percent_float_t
         datatype: float
         min: 0
@@ -220,13 +220,13 @@ namespaces:
         description: |
           Set the desired seat position
 
-        in:
+        input:
           - name: seat
             description: |
               The desired seat position
             datatype: seat_t
 
-        error:
+        errors:
           - description: |
               "ok" - requested seat movement has been executed successfully
               "invalid_argument" - any argument out of range supported by vehicle
@@ -245,7 +245,7 @@ namespaces:
         #
         #  Argument can be of any native type, enum, struct, or typedef.
         #
-        in:
+        input:
           - name: seat
             description: |
               The seat location to change
@@ -259,7 +259,7 @@ namespaces:
               The desired position to move the component to
             datatype: movement_t
 
-        error:
+        errors:
           - description: |
               "ok" - requested seat movement has been executed successfully
               "invalid_argument" - any argument out of range supported by vehicle
@@ -274,7 +274,7 @@ namespaces:
         description: |
           Get the current position of the seat
 
-        in:
+        input:
           - name: row
             description: |
               The desired seat row to query, front 1 and +1 toward rear
@@ -284,13 +284,13 @@ namespaces:
               The desired seat index to query,  1 left most (as seen looking forward), +1 toward right
             datatype: uint8
 
-        out:
+        output:
           - name: seat
             description: |
               The seat state that was requested
             datatype: seat_t
 
-        error:
+        errors:
           - description: |
               "ok" - current position of selected seat has been returned
               "invalid_argument" - any argument out of range supported by vehicle
@@ -318,7 +318,7 @@ namespaces:
       - name: seat_moving
         description: |
           The event of a seat beginning movement
-        in:
+        input:
           - name: status
             description: |
               The movement status, moving (1), not moving (0)
@@ -339,7 +339,7 @@ namespaces:
       - name: passenger_present
         description: |
           When the seat passenger status changes
-        in:
+        input:
           - name: status
             description: |
               The status of seat passenger, passenger (1), no passenger (0)
