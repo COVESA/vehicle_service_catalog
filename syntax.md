@@ -62,18 +62,18 @@ described [here](https://creativecommons.org/licenses/by/4.0/)
     - [Namespace list Object: `methods`](#namespace-list-object-methods)
         - [Methods key-value: `name`](#methods-key-value-name)
         - [Methods key-value: `description`](#methods-key-value-description)
-        - [Methods list object: `in`](#methods-list-object-in)
-            - [In parameter key-value: `name`](#in-parameter-key-value-name)
-            - [In parameter key-value: `description`](#in-parameter-key-value-description)
-            - [In parameter key-value: `datatype`](#in-parameter-key-value-datatype)
-            - [In parameter key-value: `arraysize`](#in-parameter-key-value-arraysize)
-            - [In parameter key-value: `range`](#in-parameter-key-value-range)
-        - [Methods list object: `out`](#methods-list-object-out)
-            - [Out parameter key-value: `name`](#out-parameter-key-value-name)
-            - [Out parameter key-value: `description`](#out-parameter-key-value-description)
-            - [Out parameter key-value: `datatype`](#out-parameter-key-value-datatype)
-            - [Out parameter key-value: `arraysize`](#out-parameter-key-value-arraysize)
-            - [Out parameter key-value: `range`](#out-parameter-key-value-range)
+        - [Methods list object: `input`](#methods-list-object-input)
+            - [Input parameter key-value: `name`](#input-parameter-key-value-name)
+            - [Input parameter key-value: `description`](#input-parameter-key-value-description)
+            - [Input parameter key-value: `datatype`](#input-parameter-key-value-datatype)
+            - [Input parameter key-value: `arraysize`](#input-parameter-key-value-arraysize)
+            - [Input parameter key-value: `range`](#input-parameter-key-value-range)
+        - [Methods list object: `output`](#methods-list-object-output)
+            - [Output parameter key-value: `name`](#output-parameter-key-value-name)
+            - [Output parameter key-value: `description`](#output-parameter-key-value-description)
+            - [Output parameter key-value: `datatype`](#output-parameter-key-value-datatype)
+            - [Output parameter key-value: `arraysize`](#output-parameter-key-value-arraysize)
+            - [Output parameter key-value: `range`](#output-parameter-key-value-range)
         - [Methods list object: `error`](#methods-list-object-error)
             - [Error parameter key-value: `description`](#error-parameter-key-value-description)
             - [Error parameter key-value: `datatype`](#error-parameter-key-value-datatype)
@@ -82,12 +82,12 @@ described [here](https://creativecommons.org/licenses/by/4.0/)
     - [Namespace list object: `events`](#namespace-list-object-events)
         - [Event key-value: `name`](#event-key-value-name)
         - [Event key-value: `description`](#event-key-value-description)
-        - [Event list object: `in`](#event-list-object-in)
-            - [In parameter key-value: `name`](#in-parameter-key-value-name-1)
-            - [In parameter key-value: `description`](#in-parameter-key-value-description-1)
-            - [In parameter key-value: `datatype`](#in-parameter-key-value-datatype-1)
-            - [In parameter key-value: `arraysize`](#in-parameter-key-value-arraysize-1)
-            - [In parameter key-value: `range`](#in-parameter-key-value-range-1)
+        - [Event list object: `input`](#event-list-object-input)
+            - [Input parameter key-value: `name`](#input-parameter-key-value-name-1)
+            - [Input parameter key-value: `description`](#input-parameter-key-value-description-1)
+            - [Input parameter key-value: `datatype`](#input-parameter-key-value-datatype-1)
+            - [Input parameter key-value: `arraysize`](#input-parameter-key-value-arraysize-1)
+            - [Input parameter key-value: `range`](#input-parameter-key-value-range-1)
     - [Namespace list object: `properties`](#namespace-list-object-properties)
         - [Property key-value: `name`](#property-key-value-name)
         - [Property key-value: `description`](#property-key-value-description)
@@ -220,7 +220,7 @@ Only single-dimensional arrays are supported.
 # VALUE RANGE SPECIFICATION
 
 Methods, events, and properties can optionally specify a range of
-legal value that their `in`, `out`, `error` and property can take.
+legal value that their `input`, `output`, `error` and property can take.
 
 A range is specified as a list of values that are legal for a given
 parameter or property to have.
@@ -497,7 +497,7 @@ namespaces:
         
     methods:
       - name: my_method
-        in:
+        input:
           - name: an_argument
             datatype: my_typedef
 ```
@@ -565,7 +565,7 @@ namespaces:
   - name: my_namespace
     methods:
       - name: my_method
-        in:
+        input:
           - name: an_argument
             datatype: .external_namespace.nested_namespace.my_typedef
 ```
@@ -1272,7 +1272,7 @@ Contains a description of the enum option.
 | **Mandatory Keys**     | `name`               |
 | **Optional keys**      | `description`        |
 | **Mand. hosted lists** | N/A                  |
-| **Opt. hosted lists**  | `in`, `out`, `error` |
+| **Opt. hosted lists**  | `input`, `output`, `error` |
 
 Each `methods` list object specifies a method call, executed by a
 single server instance, that optionally returns a value. 
@@ -1325,20 +1325,20 @@ Defines the name of the method.
 
 Specifies a description of the method.
 
-### Methods list object: `in`
+### Methods list object: `input`
 |                    |                                |
 |:-------------------|:-------------------------------|
 | **Hosted by**      | `methods` list object          |
 | **Mandatory Keys** | `name`, `datatype`             |
 | **Optional keys**  | `description`,`value`, `range` |
 
-Each `in` list object defines an input parameter to the method
+Each `input` list object defines an input parameter to the method
 
 Please see the `methods` sample code above for an example of how 
-`in` parameter lists are used
+`input` parameter lists are used
 
 
-#### In parameter key-value: `name`
+#### Input parameter key-value: `name`
 |                  |         |
 |:-----------------|:--------|
 | **YAML Type**    | string  |
@@ -1348,7 +1348,7 @@ Please see the `methods` sample code above for an example of how
 Specifies the name of the input parameter
 
 
-#### In parameter key-value: `description`
+#### Input parameter key-value: `description`
 |                  |               |
 |:-----------------|:--------------|
 | **YAML Type**    | string        |
@@ -1357,7 +1357,7 @@ Specifies the name of the input parameter
 
 Contains a description of the input parameter.
 
-#### In parameter key-value: `datatype`
+#### Input parameter key-value: `datatype`
 |                  |                                 |
 |:-----------------|:--------------------------------|
 | **YAML Type**    | string                          |
@@ -1377,7 +1377,7 @@ optionally be provided to specify the number of elements in the array.
 If `arraysize` is not specified for an array type, the member array
 can contain an arbitrary number of elements.
 
-#### In parameter key-value: `arraysize`
+#### Input parameter key-value: `arraysize`
 |                  |                    |
 |:-----------------|:-------------------|
 | **YAML Type**    | int                |
@@ -1389,7 +1389,7 @@ Specifies the number of elements in the input parameter array.
 This key is only allowed if the `datatype` element specifies an array
 (ending with `[]`).
 
-#### In parameter key-value: `range`
+#### Input parameter key-value: `range`
 |                  |                             |
 |:-----------------|:----------------------------|
 | **YAML Type**    | string                      |
@@ -1403,19 +1403,19 @@ Please see [value range specification](#value-range-specification)
 chapter for details on how to specify ranges.
 
 
-### Methods list object: `out`
+### Methods list object: `output`
 |                    |                               |
 |:-------------------|:------------------------------|
 | **Hosted by**      | `methods` list object         |
 | **Mandatory Keys** | `name`, `datatype`            |
 | **Optional keys**  | `description`,`value`,`range` |
 
-Each `out` list object defines an output parameter to the method
+Each `output` list object defines an output parameter to the method
 
 Please see the `methods` sample code above for an example of how 
-`out` parameter lists are used
+`output` parameter lists are used
 
-#### Out parameter key-value: `name`
+#### Output parameter key-value: `name`
 |                  |         |
 |:-----------------|:--------|
 | **YAML Type**    | string  |
@@ -1424,7 +1424,7 @@ Please see the `methods` sample code above for an example of how
 
 Specifies the name of the output parameter
 
-#### Out parameter key-value: `description`
+#### Output parameter key-value: `description`
 |                  |               |
 |:-----------------|:--------------|
 | **YAML Type**    | string        |
@@ -1433,7 +1433,7 @@ Specifies the name of the output parameter
 
 Contains a description of the output parameter.
 
-#### Out parameter key-value: `datatype`
+#### Output parameter key-value: `datatype`
 |                  |                                 |
 |:-----------------|:--------------------------------|
 | **YAML Type**    | string                          |
@@ -1453,7 +1453,7 @@ optionally be provided to specify the number of elements in the array.
 If `arraysize` is not specified for an array type, the member array
 can contain an arbitrary number of elements.
 
-#### Out parameter key-value: `arraysize`
+#### Output parameter key-value: `arraysize`
 |                  |                    |
 |:-----------------|:-------------------|
 | **YAML Type**    | int                |
@@ -1466,7 +1466,7 @@ This key is only allowed if the `datatype` element specifies an array
 (ending with `[]`).
 
 
-#### Out parameter key-value: `range`
+#### Output parameter key-value: `range`
 |                  |                             |
 |:-----------------|:----------------------------|
 | **YAML Type**    | string                      |
@@ -1489,14 +1489,14 @@ chapter for details on how to specify ranges.
 
 
 The optional `error` element defines an error value to return. The
-`error` element is returned in addition to any `out` elements
+`error` element is returned in addition to any `output` elements
 specified for the method call.
 
 Please see the `methods` sample code above for an example of how
 `error` parameter lists are used
 
 If no `error` element is specified, no specific error code is
-returned. Results may still be returned as an `out` parameter`
+returned. Results may still be returned as an `output` parameter`
 
 **Note** `error` specifies return values for the method call
 itself. Transport-layer issues arising from interrupted communication,
@@ -1569,7 +1569,7 @@ Specifies a description of how the errors shall be used.
 | **Mandatory Keys**     | `name`            |
 | **Optional keys**      | `description`     |
 | **Mand. hosted lists** | N/A               |
-| **Opt. hosted lists**  | `in`              |
+| **Opt. hosted lists**  | `input`              |
 |                        |                   |
 
 Each `events` list object specifies a fire-and-forget call, executed
@@ -1621,19 +1621,19 @@ Defines the name of the event.
 
 Specifies a description of the event.
 
-### Event list object: `in`
+### Event list object: `input`
 |                    |                                |
 |:-------------------|:-------------------------------|
 | **Hosted by**      | `methods` list object          |
 | **Mandatory Keys** | `name`, `datatype`             |
 | **Optional keys**  | `description`,`value`, `range` |
 
-Each `in` list object defines an input parameter to the event
+Each `input` list object defines an input parameter to the event
 
 Please see the `events` sample code above for an example of how 
-`in` parameter lists are used
+`input` parameter lists are used
 
-#### In parameter key-value: `name`
+#### Input parameter key-value: `name`
 |                  |         |
 |:-----------------|:--------|
 | **YAML Type**    | string  |
@@ -1643,7 +1643,7 @@ Please see the `events` sample code above for an example of how
 Specifies the name of the input parameter
 
 
-#### In parameter key-value: `description`
+#### Input parameter key-value: `description`
 |                  |               |
 |:-----------------|:--------------|
 | **YAML Type**    | string        |
@@ -1653,7 +1653,7 @@ Specifies the name of the input parameter
 Contains a description of the input parameter.
 
 
-#### In parameter key-value: `datatype`
+#### Input parameter key-value: `datatype`
 |                  |                                 |
 |:-----------------|:--------------------------------|
 | **YAML Type**    | string                          |
@@ -1673,7 +1673,7 @@ optionally be provided to specify the number of elements in the array.
 If `arraysize` is not specified for an array type, the member array
 can contain an arbitrary number of elements.
 
-#### In parameter key-value: `arraysize`
+#### Input parameter key-value: `arraysize`
 |                  |                    |
 |:-----------------|:-------------------|
 | **YAML Type**    | int                |
@@ -1685,7 +1685,7 @@ Specifies the number of elements in the input parameter array.
 This key is only allowed if the `datatype` element specifies an array
 (ending with `[]`).
 
-#### In parameter key-value: `range`
+#### Input parameter key-value: `range`
 |                  |                             |
 |:-----------------|:----------------------------|
 | **YAML Type**    | string                      |
