@@ -226,7 +226,7 @@ namespaces:
               The desired seat position
             datatype: seat_t
 
-        error:
+        errors:
           - description: |
               "ok" - requested seat movement has been executed successfully
               "invalid_argument" - any argument out of range supported by vehicle
@@ -259,7 +259,7 @@ namespaces:
               The desired position to move the component to
             datatype: movement_t
 
-        error:
+        errors:
           - description: |
               "ok" - requested seat movement has been executed successfully
               "invalid_argument" - any argument out of range supported by vehicle
@@ -290,7 +290,7 @@ namespaces:
               The seat state that was requested
             datatype: seat_t
 
-        error:
+        errors:
           - description: |
               "ok" - current position of selected seat has been returned
               "invalid_argument" - any argument out of range supported by vehicle
