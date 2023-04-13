@@ -132,23 +132,29 @@ The format supports the following features
 * **Deployment files**  
   Adds deployment-specific data to a VSC file.
   
-## Features currently not included
+## Features that are not included, or under discussion:
 
-The following features are yet to be determined:
+The following features are worth commenting on here:
 
 * **Signals**  
-  These are semantically equivalent to single-argument events. We need to decide
-  how we want to integrate VSS signals.
-  
-* **More?**
-
-
+  The word Signal is interpreted by some as the transfer of a _value_ associated 
+  with a name/id for what that value represents.  This value transfer ought to
+  be semantically equivalent to single-argument Event, and is therefore supported
+  that way within VSC.  Another interpretation is that the word Signal represents
+  the underlying data item itself, so that value-transfers are defined as a
+  consequence of for example "subscribing to changes of a Signal".  In this second
+  interpretation the Signal is represented by a Property in VSC.  The Vehicle
+  Signal Specification (VSS) typically uses the the second interpretation, and
+  VSS Signals can then be represented by Properties in VSC.  (Refer to further
+  documentation on VSC/VSS relationship).
+   
 --------------------
 
 # NAMESPACE VERSIONING
 
-VSC namespaces can optionally have a major and minor version,
-specified by `major_version` and `minor_version` keys.
+VSC namespaces can optionally have a major and minor version, specified by
+`major_version` and `minor_version` keys, complemented by an additional
+free format string named version-label.
 
 Namespace version management lets a client implementation have
 expectations that a server implementation will support a specific
@@ -170,6 +176,16 @@ Namespace versioning can be used build-time to ensure that the correct
 version of all needed namespace implementations are deployed, while
 also detecting if multiple, non-compatible versions of a namespace is
 required.
+
+# INTERFACE VERSIONING
+
+An Interface is essentially a specialization of the Namespace concept.
+Interfaces may be verisoned in the same manner as described for Namespaces.
+There may be rules implemented in validation tools that ensure interface
+versions match the versioning of namespaces.  (E.g. Don't claim an interface is
+compatible if its parent namespace have changed in an incompatible way).
+
+**This section needs clarification**
 
 -------------------
 
@@ -216,11 +232,23 @@ arraysize: 5
 
 Only single-dimensional arrays are supported.
 
+**This section is subject to change/clarification**
+
 ---------------
 # VALUE RANGE SPECIFICATION
 
-Methods, events, and properties can optionally specify a range of
-legal value that their `input`, `output`, `error` and property can take.
+When defining a typedef, fundamental types can be constrained
+to a limited set of legal values.
+
+In addition to where type is defined,  Methods, events, and properties can also
+optionally specify the legal value that their `input`, `output`, `error`
+and property can take, in the context of that Method/Event/Property only.
+
+Constraints defined on Method/Event/Property level should always be narrowing,
+in other words reducing the allowed values compared to the original type.  
+
+**For clarity: In all cases, constraints at the point of usage take precedence
+over constraints defined in the type definition.
 
 A range is specified as a list of values that are legal for a given
 parameter or property to have.
@@ -298,7 +326,7 @@ For strings, lexigraphic intervals are used:
 
 In this case the legal values for the value are `aaa`, `aab`, `aac`, and `aad`.
 
-An inteval can be floats:
+An interval can be floats:
 
 `$ in_interval (-1.0, 1.0)`
 
@@ -433,6 +461,8 @@ the tested value will render the expression false. This is especially
 important for unbound arrays where the value can host any number of
 elements.
 
+**This section is subject to change/clarification**
+
 
 If the value is of a complex type where the type's members are arrays,
 a combination of member names and array indices can be used, as shown
@@ -545,6 +575,9 @@ prefixing its name with a period-separated namespace path to `my_typedef`:
 
     datatype: nested_namespace.second_level_nested_namespace.my_typedef
 
+`my_method` does not need to specify `my_namespace` in the datatype path, since
+`my_method` is defined inside that same namespace.
+
 This syntax allows any defined data type of any nested namespace to be referenced.
 
 ##  External namespace data type
@@ -584,65 +617,33 @@ This syntax allows any defined data type anywhere in the tree to be used.
 
 -----------------------
 
-# DEPLOYMENT FILES
+# LAYERS CONCEPT
 
-Deployment files contains VSC file extensions to be applied when the
-VSC file is processed.  An example of deployment file data is a DBUS
-interface specification to be used for a namespace, or a SOME/IP
-method ID to be used for a method call.
+The VSC approach implements a layered approach to the definition of interfaces,
+and potentially other aspects of a system.  The core interface file (Interface
+Description Language, or Interface Description Model) shall contain only a
+_generic_ interface description that can be as widely applicable as possible.
 
-By separating the extension data into their own deployment files the
-core VSC specification can be kept independent of deployment details
-such as network protocols and topology.
+As such, it avoids including specific information that only applies in certain
+interface contexts, such as anything specific to the chosen transport protocol,
+the programming language, and so on.
 
-An example of a VSC file sample and a deployment file extension to
-that sample is given below:
+Each new **Layer Type** defines what new metadata it provides to the overall
+model.  A Layer Type Specification may be written as a human-readable document,
+but is often provided as a "YAML schema" type of file, that can be used to
+programatically validate layer input against formal rules.
 
+Layers do not always need to add new _types_ of information.  It is possible to
+'overlay' files that are of the same core interface (IDL) schema as an original
+file, for the purpose of adding details that were not defined, removing nodes,
+or even redefining/changing the definition of some things defined in the
+original file.
 
-**File: `comfort-service.yml`**  
-```YAML
-name: comfort
-namespaces:
-  - name: seats
-    description: Seat interface and datatypes.
-
-    structs: ...
-    methods: ...
-   ...
-```
-
-**File: `comfort-dbus-deployment.yml`**  
-
-```YAML
-name: comfort
-namespaces: 
-  - name: seats
-    dbus_interface: com.genivi.cabin.seat.v1
-```
-
-The combined YAML structure to be processed will look like this:
-
-```YAML
-name: comfort
-namespaces: 
-  - name: seats
-    description: Seat interface and datatypes.
-    dbus_interface: com.genivi.cabin.seat.v1
-
-    structs: ...
-    methods: ...
-```
-
-The semantic difference between a regular VSC file included by an
-`includes` list object and a deployment file is that the deployment
-file does not have any restrictions on the keys that it adds.  In the
-example above, the `dbus_interface` key-value pair can only be added
-in a deployment file since `dbus_interface` is not a part of the
-regular VSC file syntax.
-
-## Deployment file overrides
-If a deployment file key-value element is also defined in the VSC
-file, the deployment file's value will be used.
+In other words, tools are expected to process multiple IDL files and to merge
+their contents according to predefined rules.  Conflicting information could,
+for example be handled by writing a warning, or to let the last provided layer
+file to take precedence over previous definitions.  (Refer to detailed
+documentation for each tool).
 
 Example:
 
@@ -727,6 +728,73 @@ events:
         datatype: string
 ```
 
+
+
+There is not a fixed list of layer types - some may be standardized and
+defined, and therefore documented, but the design is there to allow many
+extensions that have not yet been invented or agreed upon.
+
+
+# DEPLOYMENT LAYER
+
+Deployment layer, a.k.a. Deployment Model files, is a specialization of the
+general layers concept.  This terminology is used to indicate a type of layer
+that in adds additional metadata that is directly related to the interface 
+described in the IDL.  It is information needed to process, or interpret, VSC
+interface files in a particular target environment.
+
+An example of deployment file data is a DBUS interface specification to be used
+for a namespace, or a SOME/IP method ID to be used for a method call.  
+
+By separating the extension data into their own deployment files the
+core VSC specification can be kept independent of deployment details
+such as network protocols and topology.
+
+An example of a VSC file sample and a deployment file extension to
+that sample is given below:
+
+
+**File: `comfort-service.yml`**  
+```YAML
+name: comfort
+namespaces:
+  - name: seats
+    description: Seat interface and datatypes.
+
+    structs: ...
+    methods: ...
+   ...
+```
+
+**File: `comfort-dbus-deployment.yml`**  
+
+```YAML
+name: comfort
+namespaces: 
+  - name: seats
+    dbus_interface: com.genivi.cabin.seat.v1
+```
+
+The combined YAML structure to be processed will look like this:
+
+```YAML
+name: comfort
+namespaces: 
+  - name: seats
+    description: Seat interface and datatypes.
+    dbus_interface: com.genivi.cabin.seat.v1
+
+    structs: ...
+    methods: ...
+```
+
+The semantic difference between a regular VSC file included by an
+`includes` list object and a deployment file is that the deployment
+file can follow a different specification/schema and add keys that
+are not allowed in the plain IDL layer.  In the example above, the
+`dbus_interface` key-value pair can only be added in a deployment file since
+`dbus_interface` is not a part of the regular VSC IDL file syntax.
+
 ----------
 
 # VSC FILE SYNTAX, SEMANTICS AND STRUCTURE
@@ -738,6 +806,8 @@ addition to this other namespaces, `includes`, `datatypes`, `methods`,
 `events`, and `properties` can be specified.
 
 A complete VSC file example is given below:
+
+**NOTE: This example might be outdated**
 
 ```YAML
 ---
@@ -813,6 +883,7 @@ The terminals used in the grammar (`LETTER`, `DIGIT`, etc) are
 imported from
 [common.lark](https://github.com/lark-parser/lark/blob/master/lark/grammars/common.lark)
 
+**TODO - include the auto-generated documentation here**
 
 -----------------
 
