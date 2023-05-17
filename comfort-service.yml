@@ -122,7 +122,6 @@ namespaces:
 
 
       - name: seat_t
-        type: struct
         description: |
           The structure used to describe the seat's position in the vehicle
 
