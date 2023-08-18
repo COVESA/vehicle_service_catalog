@@ -203,171 +203,174 @@ namespaces:
         description: |
           Current seat component
 
-    # METHODS
-    #
-    # This section defines all methods for the given namespace.
-    #
-    # A method invokes a command for a given service that may optionally
-    # return a value.
-    #
-    # Only one service instance will execute a call. The service discovery
-    # and invocation mechanism is up to the implementation to resolve (possibly
-    # with the help of deployment files).
-    #
-    methods:
-      - name: move
-        description: |
-          Set the desired seat position
 
-        input:
-          - name: seat
-            description: |
-              The desired seat position
-            datatype: seat_t
+    interface:
+      name : MyInterface
+      # METHODS
+      #
+      # This section defines all methods for the given namespace.
+      #
+      # A method invokes a command for a given service that may optionally
+      # return a value.
+      #
+      # Only one service instance will execute a call. The service discovery
+      # and invocation mechanism is up to the implementation to resolve (possibly
+      # with the help of deployment files).
+      #
+      methods:
+        - name: move
+          description: |
+            Set the desired seat position
 
-        errors:
-          - description: |
-              "ok" - requested seat movement has been executed successfully
-              "invalid_argument" - any argument out of range supported by vehicle
-              "not_found" - addressed seat not available/existing
-              "interrupted" - operation interrupted
-              "busy" - seat service is currently busy
-              "other" - internal error in implementation
-            datatype: .stdvsc.error_t
-            range: $ in_set("ok", "invalid_argument", "not_found", "interrupted", "busy", "other")
+          input:
+            - name: seat
+              description: |
+                The desired seat position
+              datatype: seat_t
 
-      - name: move_component
-        description: |
-          Set a seat component position
+          errors:
+            - description: |
+                "ok" - requested seat movement has been executed successfully
+                "invalid_argument" - any argument out of range supported by vehicle
+                "not_found" - addressed seat not available/existing
+                "interrupted" - operation interrupted
+                "busy" - seat service is currently busy
+                "other" - internal error in implementation
+              datatype: err_enum
+              range: $ in_set("ok", "invalid_argument", "not_found", "interrupted", "busy", "other")
 
-        # Arguments
-        #
-        #  Argument can be of any native type, enum, struct, or typedef.
-        #
-        input:
-          - name: seat
-            description: |
-              The seat location to change
-            datatype: seat_location_t
-          - name: component
-            description: |
-              The component position to change
-            datatype: seat_component_t
-          - name: position
-            description: |
-              The desired position to move the component to
-            datatype: movement_t
+        - name: move_component
+          description: |
+            Set a seat component position
 
-        errors:
-          - description: |
-              "ok" - requested seat movement has been executed successfully
-              "invalid_argument" - any argument out of range supported by vehicle
-              "not_found" - addressed seat not available/existing
-              "interrupted" - operation interrupted
-              "busy" - seat service is currently busy
-              "other" - internal error in implementation
-            datatype: .stdvsc.error_t
-            range: $ in_set("ok", "invalid_argument", "not_found", "interrupted", "busy", "other")
+          # Arguments
+          #
+          #  Argument can be of any native type, enum, struct, or typedef.
+          #
+          input:
+            - name: seat
+              description: |
+                The seat location to change
+              datatype: seat_location_t
+            - name: component
+              description: |
+                The component position to change
+              datatype: seat_component_t
+            - name: position
+              description: |
+                The desired position to move the component to
+              datatype: movement_t
 
-      - name: current_position
-        description: |
-          Get the current position of the seat
+          errors:
+            - description: |
+                "ok" - requested seat movement has been executed successfully
+                "invalid_argument" - any argument out of range supported by vehicle
+                "not_found" - addressed seat not available/existing
+                "interrupted" - operation interrupted
+                "busy" - seat service is currently busy
+                "other" - internal error in implementation
+              datatype: err_enum
+              range: $ in_set("ok", "invalid_argument", "not_found", "interrupted", "busy", "other")
 
-        input:
-          - name: row
-            description: |
-              The desired seat row to query, front 1 and +1 toward rear
-            datatype: uint8
-          - name: index
-            description: |
-              The desired seat index to query,  1 left most (as seen looking forward), +1 toward right
-            datatype: uint8
+        - name: current_position
+          description: |
+            Get the current position of the seat
 
-        output:
-          - name: seat
-            description: |
-              The seat state that was requested
-            datatype: seat_t
+          input:
+            - name: row
+              description: |
+                The desired seat row to query, front 1 and +1 toward rear
+              datatype: uint8
+            - name: index
+              description: |
+                The desired seat index to query,  1 left most (as seen looking forward), +1 toward right
+              datatype: uint8
 
-        errors:
-          - description: |
-              "ok" - current position of selected seat has been returned
-              "invalid_argument" - any argument out of range supported by vehicle
-              "not_found" - addressed seat not available/existing
-              "other" - internal error in implementation
-              It is assumed that this operation does not need unique resources and returns immediately,
-              so no need to support "interrupted" and "busy" as errors.
-            datatype: .stdvsc.error_t
-            range: $ in_set("ok", "invalid_argument", "not_found", "other")
+          output:
+            - name: seat
+              description: |
+                The seat state that was requested
+              datatype: seat_t
 
-    # EVENTS
-    #
-    # This section defines all events for the given namespace.
-    #
-    # Events are non-returning commands with multiple subscribers,
-    # much like SOME/IP events.
-    # Unlike signals an event retains no state (value) after it has
-    # been called; once it has been sent it is forgotten.
-    #
-    # TODO:
-    # + FrancaIDL may lack semantics to cover this. We need to
-    #   create appropriate transformation rules.
-    #
-    events:
-      - name: seat_moving
-        description: |
-          The event of a seat beginning movement
-        input:
-          - name: status
-            description: |
-              The movement status, moving (1), not moving (0)
-            datatype: uint8
-          - name: row
-            description: |
-              The row of the seat,  front 1 and +1 toward rear
-            datatype: uint8
-          - name: index
-            description: |
-              The index of the seat position in the row,  1 left most (as seen looking forward), +1 toward right
-            datatype: uint8
-          - name: component
-            description: |
-              The seat component that is moving
-            datatype: seat_component_t
+          errors:
+            - description: |
+                "ok" - current position of selected seat has been returned
+                "invalid_argument" - any argument out of range supported by vehicle
+                "not_found" - addressed seat not available/existing
+                "other" - internal error in implementation
+                It is assumed that this operation does not need unique resources and returns immediately,
+                so no need to support "interrupted" and "busy" as errors.
+              datatype: err_enum
+              range: $ in_set("ok", "invalid_argument", "not_found", "other")
 
-      - name: passenger_present
-        description: |
-          When the seat passenger status changes
-        input:
-          - name: status
-            description: |
-              The status of seat passenger, passenger (1), no passenger (0)
-            datatype: boolean
-          - name: row
-            description: |
-              The row of the seat, front 1 and +1 toward rear
-            datatype: uint8
-          - name: index
-            description: |
-              The index of the seat position in the row,  1 left most (as seen looking forward), +1 toward right
-            datatype: uint8
+      # EVENTS
+      #
+      # This section defines all events for the given namespace.
+      #
+      # Events are non-returning commands with multiple subscribers,
+      # much like SOME/IP events.
+      # Unlike signals an event retains no state (value) after it has
+      # been called; once it has been sent it is forgotten.
+      #
+      # TODO:
+      # + FrancaIDL may lack semantics to cover this. We need to
+      #   create appropriate transformation rules.
+      #
+      events:
+        - name: seat_moving
+          description: |
+            The event of a seat beginning movement
+          input:
+            - name: status
+              description: |
+                The movement status, moving (1), not moving (0)
+              datatype: uint8
+            - name: row
+              description: |
+                The row of the seat,  front 1 and +1 toward rear
+              datatype: uint8
+            - name: index
+              description: |
+                The index of the seat position in the row,  1 left most (as seen looking forward), +1 toward right
+              datatype: uint8
+            - name: component
+              description: |
+                The seat component that is moving
+              datatype: seat_component_t
+
+        - name: passenger_present
+          description: |
+            When the seat passenger status changes
+          input:
+            - name: status
+              description: |
+                The status of seat passenger, passenger (1), no passenger (0)
+              datatype: boolean
+            - name: row
+              description: |
+                The row of the seat, front 1 and +1 toward rear
+              datatype: uint8
+            - name: index
+              description: |
+                The index of the seat position in the row,  1 left most (as seen looking forward), +1 toward right
+              datatype: uint8
 
 
-    # PROPERTIES
-    #
-    # This section defines properties for the given namespace.
-    #
-    # Properties are service data elements that are distributed
-    # across one or more subscribers. They are equivalent to
-    # MQTT topics or SOME/IP fields.
-    #
-    # In VSC all properties are considered to be read/write
-    #
-    # TODO: Define relationship, rules, and semantics
-    #       between properties and VSS signals.
-    #       See vss_integration_proposal.yml for one solution.
-    #
-    properties:
-      - name: a_property
-        description: A signal
-        datatype: uint8
+      # PROPERTIES
+      #
+      # This section defines properties for the given namespace.
+      #
+      # Properties are service data elements that are distributed
+      # across one or more subscribers. They are equivalent to
+      # MQTT topics or SOME/IP fields.
+      #
+      # In VSC all properties are considered to be read/write
+      #
+      # TODO: Define relationship, rules, and semantics
+      #       between properties and VSS signals.
+      #       See vss_integration_proposal.yml for one solution.
+      #
+      properties:
+        - name: a_property
+          description: A signal
+          datatype: uint8
