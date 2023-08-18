@@ -1,48 +1,5 @@
-#
-# (C) 2021 - Magnus Feuer
-#
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at https://mozilla.org/MPL/2.0/.
-#
+The proposal that was previously stored in this file, for how to integrate into an
+IFEX-style interface with a VSS-style description of data items, has been
+extended and a more complete version is now in the IFEX documentation:
 
-#
-# A proposal for how we can translate VSS signals to properties.
-#
-# Each branch is a namespace, and signals are defined as properties within those
-# namespaces. As VSC considers all properties as readable and writeable there is no possibility to translate the VSS
-# type (i.e. attribute, sensor or actuator) into Yaml. That does instead need to be managed by access rights in VSC
-# implementations. No client shall e.g. have access right to write VIN, and even if they would the result would be
-# the same - any attempt on writing should result in an error indicating "not supported"
-
-
-# From VSS :
-#
-# - Vehicle:
-#   type: branch
-#   description: High-level vehicle data.
-#
-# - VehicleIdentification:
-#   type: branch
-#   description: Attributes that identify a vehicle
-#
-# - VehicleIdentification.VIN:
-#   datatype: string
-#   type: attribute
-#   description: 17-character Vehicle Identification Number (VIN) as defined by ISO 3779
-
-
-namespaces:
-  - name: Vehicle
-    description: High-level vehicle data.
-
-    namespaces:
-      - name: VehicleIdentification
-        description:  Attributes that identify a vehicle
-
-        properties:
-          - name: VIN
-            description: 17-character Vehicle Identification Number (VIN) as defined by ISO 3779
-            datatype: string # VSS should have same native types as VSC
-
-
+https://covesa.github.io/ifex/
